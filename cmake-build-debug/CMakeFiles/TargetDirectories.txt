@@ -1,0 +1,3 @@
+C:/Users/Troja/Documents/_MyDocuments/GitHub/SudokuSolver/cmake-build-debug/CMakeFiles/SudokuSolver.dir
+C:/Users/Troja/Documents/_MyDocuments/GitHub/SudokuSolver/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Troja/Documents/_MyDocuments/GitHub/SudokuSolver/cmake-build-debug/CMakeFiles/rebuild_cache.dir

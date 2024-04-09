@@ -1,0 +1,10 @@
+# ninja log v5
+2	459	7343858564869207	build.ninja	10fce11b5a8e7f12
+0	227	7343851035287239	CMakeFiles/SudokuSolver.dir/main.cpp.obj	6d2a6f3eedd3246a
+235	338	7343851036367389	SudokuSolver.exe	697afa7c33e9b3a4
+2	131	7343858564869207	build.ninja	10fce11b5a8e7f12
+4	668	7343858572041601	CMakeFiles/SudokuSolver.dir/src/objects/Object.cpp.obj	c0b6522ae0104db5
+0	672	7343858572073450	CMakeFiles/SudokuSolver.dir/src/main.cpp.obj	613c2a8154341b7c
+7	733	7343858572695361	CMakeFiles/SudokuSolver.dir/src/Core.cpp.obj	97d0593a88d798f6
+3	386	7343859150459064	CMakeFiles/SudokuSolver.dir/src/objects/Object.cpp.obj	c0b6522ae0104db5
+386	466	7343859151246666	SudokuSolver.exe	f6e475be7bd8aa53
