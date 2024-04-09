@@ -3,7 +3,7 @@ project(SudokuSolver)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(SudokuSolver src/main.cpp src/Core.cpp headers/Core.h src/objects/Object.cpp headers/objects/Object.h)
+add_executable(SudokuSolver src/main.cpp src/Core.cpp headers/Core.h src/objects/Object.cpp headers/objects/Object.h src/objects/numberBox/NumberGrid.cpp headers/objects/numberBox/NumberGrid.h src/objects/numberBox/TextBox.cpp headers/objects/numberBox/TextBox.h)
 
 include_directories(headers "C:/SFML")
 

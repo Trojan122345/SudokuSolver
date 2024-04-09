@@ -19,10 +19,14 @@ private:
     int getNextID();
 public:
     Object();
-    explicit Object(int id);
     virtual ~Object();
+
     virtual void render(sf::RenderTarget *target)= 0;
     virtual void update() = 0;
+
+    virtual bool isInBoundaries(float posX, float posY) = 0;
+    virtual void click(sf::Event::MouseButtonEvent mouseButtonEvent) = 0;
+
     [[nodiscard]] int getID() const;
     bool compate(Object* object) const;
 };
