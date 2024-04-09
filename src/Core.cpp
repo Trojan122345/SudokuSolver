@@ -2,6 +2,7 @@
 // Created by Troja on 09/04/2024.
 //
 
+#include <iostream>
 #include "Core.h"
 
 Core::Core() :
@@ -33,12 +34,14 @@ void Core::initWindow()
 
 void Core::initVariables()
 {
-
+  numberBox = new NumberGrid();
+  backgroundObjects.push_back(numberBox);
 }
 
 void Core::startLoop()
 {
-  while(running()){
+  while (running())
+  {
     update();
     render();
   }
@@ -95,6 +98,14 @@ void Core::pollEvents()
       case sf::Event::KeyPressed:
         if (this->sfmlEvent.key.code == sf::Keyboard::Escape)
           this->window->close();
+        break;
+      case sf::Event::MouseButtonPressed:
+        if (this->sfmlEvent.mouseButton.button == sf::Mouse::Left)
+          if (this->numberBox->isInBoundaries(sfmlEvent.mouseButton.x, sfmlEvent.mouseButton.y))
+            this->numberBox->click(sfmlEvent.mouseButton);
+        break;
+      case sf::Event::TextEntered:
+          numberBox->textEntered(sfmlEvent.text.unicode);
         break;
       default:
         break;

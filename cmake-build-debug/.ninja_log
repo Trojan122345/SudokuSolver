@@ -1,10 +1,12 @@
 # ninja log v5
-2	459	7343858564869207	build.ninja	10fce11b5a8e7f12
+1	130	7343920690027247	build.ninja	10fce11b5a8e7f12
 0	227	7343851035287239	CMakeFiles/SudokuSolver.dir/main.cpp.obj	6d2a6f3eedd3246a
-235	338	7343851036367389	SudokuSolver.exe	697afa7c33e9b3a4
-2	131	7343858564869207	build.ninja	10fce11b5a8e7f12
-4	668	7343858572041601	CMakeFiles/SudokuSolver.dir/src/objects/Object.cpp.obj	c0b6522ae0104db5
-0	672	7343858572073450	CMakeFiles/SudokuSolver.dir/src/main.cpp.obj	613c2a8154341b7c
-7	733	7343858572695361	CMakeFiles/SudokuSolver.dir/src/Core.cpp.obj	97d0593a88d798f6
-3	386	7343859150459064	CMakeFiles/SudokuSolver.dir/src/objects/Object.cpp.obj	c0b6522ae0104db5
-386	466	7343859151246666	SudokuSolver.exe	f6e475be7bd8aa53
+554	682	7343978912950369	SudokuSolver.exe	113c394b53ce7f5a
+16	518	7343977776196656	CMakeFiles/SudokuSolver.dir/src/objects/Object.cpp.obj	c0b6522ae0104db5
+4	478	7343978910939566	CMakeFiles/SudokuSolver.dir/src/main.cpp.obj	613c2a8154341b7c
+8	553	7343978911689520	CMakeFiles/SudokuSolver.dir/src/Core.cpp.obj	97d0593a88d798f6
+12	487	7343978911024676	CMakeFiles/SudokuSolver.dir/src/objects/numberBox/NumberGrid.cpp.obj	ce0cc353144bee6e
+4	483	7343886959898625	CMakeFiles/SudokuSolver.dir/src/objects/numberBox/NumberBox.cpp.obj	9ec6a79fbd6788ad
+19	608	7343977777155146	CMakeFiles/SudokuSolver.dir/src/objects/numberBox/TextBox.cpp.obj	7427ed21985c7fe9
+4	443	7343979264459437	CMakeFiles/SudokuSolver.dir/src/Core.cpp.obj	97d0593a88d798f6
+444	544	7343979265450500	SudokuSolver.exe	113c394b53ce7f5a
