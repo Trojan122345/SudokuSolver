@@ -48,9 +48,6 @@ public:
     //Highlight texBox
     void setHighlight(bool isHighlighted);
     void setHighlight();
-
-    //Click
-    void click(sf::Event::MouseButtonEvent mouseButtonEvent) override;
 };
 
 

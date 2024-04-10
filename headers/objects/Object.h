@@ -25,10 +25,11 @@ public:
     virtual void update() = 0;
 
     virtual bool isInBoundaries(float posX, float posY) = 0;
-    virtual void click(sf::Event::MouseButtonEvent mouseButtonEvent) = 0;
+
+    virtual void click(sf::Event::MouseButtonEvent mouseButtonEvent){};
 
     [[nodiscard]] int getID() const;
-    bool compate(Object* object) const;
+    bool compare(Object* object) const;
 };
 
 

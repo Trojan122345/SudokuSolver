@@ -23,6 +23,8 @@ private:
     sf::Event sfmlEvent;
     std::vector<Object *> objects;
 
+    
+
     NumberGrid *numberGrid;
 
     void initWindow();

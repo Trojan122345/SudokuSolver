@@ -12,15 +12,21 @@
 class NumberGrid : public Object
 {
 private:
+    //Graphic objects
     sf::RectangleShape border;
     sf::Vector2f position;
     std::vector<std::vector<TextBox>> boxes;
+
+    //First box ID - for arrow movement
+    int firstBoxID;
 
     //initializers
     void initBorder(float posX, float posY);
     void initGrid();
 
+    //Highlight related stuff
     TextBox *highlightedBox;
+    void highlightBox(int row, int col);
 
 public:
     NumberGrid();
@@ -37,6 +43,7 @@ public:
     //Text methods
     void textEntered(const sf::String &str);
     void textErased();
+    void movePressed(sf::Keyboard::Key keyPressed);
 };
 
 

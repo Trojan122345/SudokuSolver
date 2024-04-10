@@ -78,10 +78,24 @@ void Core::pollEvents()
       case sf::Event::Closed:
         this->window->close();
       case sf::Event::KeyPressed:
-        if (this->sfmlEvent.key.code == sf::Keyboard::Escape)
-          this->window->close();
-        if (this->sfmlEvent.key.code == sf::Keyboard::Delete || this->sfmlEvent.key.code == sf::Keyboard::BackSpace)
-          this->numberGrid->textErased();
+        switch (this->sfmlEvent.key.code)
+        {
+          case sf::Keyboard::Escape:
+            this->window->close();
+            break;
+          case sf::Keyboard::Delete:
+          case sf::Keyboard::BackSpace:
+            this->numberGrid->textErased();
+            break;
+          case sf::Keyboard::Up:
+          case sf::Keyboard::Down:
+          case sf::Keyboard::Left:
+          case sf::Keyboard::Right:
+            this->numberGrid->movePressed(this->sfmlEvent.key.code);
+            break;
+          default:
+            break;
+        }
         break;
       case sf::Event::MouseButtonPressed:
         if (this->sfmlEvent.mouseButton.button == sf::Mouse::Left)

@@ -24,7 +24,7 @@ int Object::getID() const
   return ID;
 }
 
-bool Object::compate(Object *object) const
+bool Object::compare(Object *object) const
 {
   return this->ID == object->ID;
 }

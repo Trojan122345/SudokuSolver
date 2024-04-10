@@ -15,7 +15,7 @@ NumberGrid::NumberGrid() : boxes(9)
 
 NumberGrid::~NumberGrid()
 {
-
+  this->highlightedBox = nullptr;
 }
 
 void NumberGrid::initBorder(float posX, float posY)
@@ -35,17 +35,17 @@ void NumberGrid::initGrid()
   float posX, posY = 0;
   for (int i = 0; i < 9; i++)
   {
-    boxes[i] = std::vector<TextBox>(9);
+    this->boxes[i] = std::vector<TextBox>(9);
     for (int ii = 0; ii < 9; ii++)
     {
       posX = this->position.x + 31.0f * (float) ii + (float) (ii / 3);
 
       posY = this->position.y + 31.0f * (float) i + (float) (i / 3);
 
-      boxes[i][ii].setPosition(posX, posY);
+      this->boxes[i][ii].setPosition(posX, posY);
     }
   }
-
+  this->firstBoxID = this->boxes[0][0].getID();
 }
 
 void NumberGrid::render(sf::RenderTarget *target)
@@ -80,20 +80,9 @@ void NumberGrid::click(sf::Event::MouseButtonEvent mouseButtonEvent)
   {
     for (int ii = 0; ii < 9; ii++)
     {
-      if (boxes[i][ii].isInBoundaries(mouseButtonEvent.x, mouseButtonEvent.y))
+      if (this->boxes[i][ii].isInBoundaries(mouseButtonEvent.x, mouseButtonEvent.y))
       {
-        if (this->highlightedBox != nullptr)
-          this->highlightedBox->setHighlight(false);
-
-        if (this->highlightedBox != &boxes[i][ii])
-        {
-          this->highlightedBox = &boxes[i][ii];
-          this->highlightedBox->setHighlight();
-        }
-        else
-        {
-          this->highlightedBox = nullptr;
-        }
+        this->highlightBox(i, ii);
 
         br = true;
         break;
@@ -112,8 +101,64 @@ void NumberGrid::textEntered(const sf::String &str)
     this->highlightedBox->setString(str);
 }
 
-void NumberGrid::textErased(){
-  if(this->highlightedBox != nullptr){
+void NumberGrid::textErased()
+{
+  if (this->highlightedBox != nullptr)
+  {
     this->highlightedBox->setText("");
+  }
+}
+
+void NumberGrid::movePressed(sf::Keyboard::Key keyPressed)
+{
+  if (this->highlightedBox != nullptr)
+  {
+    int boxPos = highlightedBox->getID() - this->firstBoxID;
+    switch (keyPressed)
+    {
+      case sf::Keyboard::Left:
+        if (boxPos % 9 == 0)
+          boxPos += 8;
+        else
+          boxPos -= 1;
+        break;
+      case sf::Keyboard::Right:
+        if (boxPos % 9 == 8)
+          boxPos -= 8;
+        else
+          boxPos += 1;
+        break;
+      case sf::Keyboard::Up:
+        if (boxPos < 9)
+          boxPos += 9 * 8;
+        else
+          boxPos -= 9;
+        break;
+      case sf::Keyboard::Down:
+        if (boxPos > 71)
+          boxPos -= 9 * 8;
+        else
+          boxPos += 9;
+        break;
+      default:
+        break;
+    }
+    highlightBox(boxPos / 9, boxPos % 9);
+  }
+}
+
+void NumberGrid::highlightBox(int row, int col)
+{
+  if (this->highlightedBox != nullptr)
+    this->highlightedBox->setHighlight(false);
+
+  if (this->highlightedBox == nullptr || !boxes[row][col].compare(this->highlightedBox))
+  {
+    this->highlightedBox = &boxes[row][col];
+    this->highlightedBox->setHighlight();
+  }
+  else
+  {
+    this->highlightedBox = nullptr;
   }
 }

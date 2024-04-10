@@ -113,9 +113,5 @@ void TextBox::setHighlight()
   this->setHighlight(!this->highlighted);
 }
 
-void TextBox::click(sf::Event::MouseButtonEvent mouseButtonEvent)
-{
-
-}
 
 
