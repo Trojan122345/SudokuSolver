@@ -7,8 +7,7 @@
 
 Core::Core() :
         videoMode(1600, 900),
-        sfmlEvent(),
-        window(new sf::RenderWindow(this->videoMode, "Test title", sf::Style::Close | sf::Style::Titlebar))
+        sfmlEvent()
 {
   initWindow();
   initVariables();
@@ -16,26 +15,23 @@ Core::Core() :
 
 Core::~Core()
 {
-  for (auto &backgroundObject: backgroundObjects)
+  for (auto &obj: objects)
   {
-    delete backgroundObject;
-  }
-  for (auto &movindObject: movingObjects)
-  {
-    delete movindObject;
+    delete obj;
   }
 }
 
 
 void Core::initWindow()
 {
+  this->window = new sf::RenderWindow(this->videoMode, "Test title", sf::Style::Close | sf::Style::Titlebar);
   this->window->setFramerateLimit(60);
 }
 
 void Core::initVariables()
 {
-  numberBox = new NumberGrid();
-  backgroundObjects.push_back(numberBox);
+  numberGrid = new NumberGrid();
+  objects.push_back(numberGrid);
 }
 
 void Core::startLoop()
@@ -50,16 +46,9 @@ void Core::startLoop()
 void Core::update()
 {
   this->pollEvents();
-  for (Object *object: this->backgroundObjects)
+  for (Object *object: this->objects)
   {
     object->update();
-  }
-  if (!movingObjects.empty())
-  {
-    for (Object *object: this->movingObjects)
-    {
-      object->update();
-    }
   }
 }
 
@@ -67,16 +56,9 @@ void Core::render()
 {
   this->window->clear(sf::Color::White);
 
-  for (Object *object: this->backgroundObjects)
+  for (Object *object: this->objects)
   {
     object->render(this->window);
-  }
-  if (!movingObjects.empty())
-  {
-    for (Object *object: this->movingObjects)
-    {
-      object->render(this->window);
-    }
   }
 
   this->window->display();
@@ -98,14 +80,18 @@ void Core::pollEvents()
       case sf::Event::KeyPressed:
         if (this->sfmlEvent.key.code == sf::Keyboard::Escape)
           this->window->close();
+        if (this->sfmlEvent.key.code == sf::Keyboard::Delete || this->sfmlEvent.key.code == sf::Keyboard::BackSpace)
+          this->numberGrid->textErased();
         break;
       case sf::Event::MouseButtonPressed:
         if (this->sfmlEvent.mouseButton.button == sf::Mouse::Left)
-          if (this->numberBox->isInBoundaries(sfmlEvent.mouseButton.x, sfmlEvent.mouseButton.y))
-            this->numberBox->click(sfmlEvent.mouseButton);
+          for (auto &obj: this->objects)
+          {
+            obj->click(sfmlEvent.mouseButton);
+          }
         break;
       case sf::Event::TextEntered:
-          numberBox->textEntered(sfmlEvent.text.unicode);
+        this->numberGrid->textEntered(sfmlEvent.text.unicode);
         break;
       default:
         break;

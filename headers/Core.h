@@ -12,8 +12,8 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 #include "objects/Object.h"
-#include "objects/numberBox/NumberGrid.h"
-#include "objects/numberBox/TextBox.h"
+#include "objects/numberGrid/NumberGrid.h"
+#include "objects/numberGrid/TextBox.h"
 
 class Core
 {
@@ -21,10 +21,9 @@ private:
     sf::VideoMode videoMode;
     sf::RenderWindow *window;
     sf::Event sfmlEvent;
-    std::vector<Object*> backgroundObjects;
-    std::vector<Object*> movingObjects;
+    std::vector<Object *> objects;
 
-    NumberGrid* numberBox;
+    NumberGrid *numberGrid;
 
     void initWindow();
     void initVariables();
