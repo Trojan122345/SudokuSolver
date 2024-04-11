@@ -15,10 +15,7 @@ private:
     //Graphic objects
     sf::RectangleShape border;
     sf::Vector2f position;
-    std::vector<std::vector<TextBox>> boxes;
-
-    //First box ID - for arrow movement
-    int firstBoxID;
+    std::vector<std::vector<TextBox*>> boxes;
 
     //initializers
     void initBorder(float posX, float posY);
@@ -26,10 +23,13 @@ private:
 
     //Highlight related stuff
     TextBox *highlightedBox;
-    void highlightBox(int row, int col);
+    void highlightBox(TextBox* box);
 
+    //Key methods
+    void textErased();
+    void movePressed(sf::Keyboard::Key keyPressed);
 public:
-    NumberGrid();
+    explicit NumberGrid(float posX, float posY);
     ~NumberGrid() override;
     void render(sf::RenderTarget *target) override;
     void update() override;
@@ -37,13 +37,13 @@ public:
     //Collision check
     bool isInBoundaries(float posX, float posY) override;
 
-    //Click method
-    void click(sf::Event::MouseButtonEvent mouseButtonEvent) override;
+    //Mouse events
+    void onClick(sf::Event::MouseButtonEvent mouseButtonEvent) override;
+    void onMouseMove(sf::Event::MouseMoveEvent mouseMoveEvent) override;
 
     //Text methods
-    void textEntered(const sf::String &str);
-    void textErased();
-    void movePressed(sf::Keyboard::Key keyPressed);
+    void textEntered(const sf::String &str) override;
+    void keyPressed(sf::Keyboard::Key key) override;
 };
 
 

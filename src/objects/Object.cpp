@@ -8,7 +8,7 @@ int Object::NextID = 0;
 
 Object::Object():ID(getNextID())
 {
-
+  mouseIn = false;
 }
 
 Object::~Object()

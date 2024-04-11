@@ -30,8 +30,11 @@ void Core::initWindow()
 
 void Core::initVariables()
 {
-  numberGrid = new NumberGrid();
+  auto *numberGrid = new NumberGrid(50, 50);
   objects.push_back(numberGrid);
+
+  auto *button = new Button(50+31*9+1+50, 75);
+  objects.push_back(button);
 }
 
 void Core::startLoop()
@@ -83,29 +86,41 @@ void Core::pollEvents()
           case sf::Keyboard::Escape:
             this->window->close();
             break;
-          case sf::Keyboard::Delete:
-          case sf::Keyboard::BackSpace:
-            this->numberGrid->textErased();
-            break;
-          case sf::Keyboard::Up:
-          case sf::Keyboard::Down:
-          case sf::Keyboard::Left:
-          case sf::Keyboard::Right:
-            this->numberGrid->movePressed(this->sfmlEvent.key.code);
-            break;
           default:
+            for (auto &obj: this->objects)
+            {
+              obj->keyPressed(sfmlEvent.key.code);
+            }
             break;
         }
         break;
       case sf::Event::MouseButtonPressed:
+        for (auto &obj: this->objects)
+        {
+          if (obj->isInBoundaries(sfmlEvent.mouseButton.x, sfmlEvent.mouseButton.y))
+            obj->onMousePressed(sfmlEvent.mouseButton);
+        }
+        break;
+      case sf::Event::MouseButtonReleased:
         if (this->sfmlEvent.mouseButton.button == sf::Mouse::Left)
           for (auto &obj: this->objects)
           {
-            obj->click(sfmlEvent.mouseButton);
+            obj->onMouseReleased(sfmlEvent.mouseButton);
+            if (obj->isInBoundaries(sfmlEvent.mouseButton.x, sfmlEvent.mouseButton.y))
+              obj->onClick(sfmlEvent.mouseButton);
           }
         break;
       case sf::Event::TextEntered:
-        this->numberGrid->textEntered(sfmlEvent.text.unicode);
+        for (auto &obj: this->objects)
+        {
+          obj->textEntered(sfmlEvent.text.unicode);
+        }
+        break;
+      case sf::Event::MouseMoved:
+        for (auto &obj: this->objects)
+        {
+          obj->onMouseMove(sfmlEvent.mouseMove);
+        }
         break;
       default:
         break;

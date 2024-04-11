@@ -70,8 +70,8 @@ sf::Font TextBox::getFont()
 {
   sf::Font temp;
 
-  //This should be handled differently - project is small, cout is enough for now
-  if (!temp.loadFromFile("../res/arial.ttf"))
+  //This should be handled differently - project is small, std::cout is enough for now
+  if (!temp.loadFromFile("../res/fonts/arial.ttf"))
   {
     std::cout << "Failed to load font\n";
   }
@@ -92,17 +92,19 @@ void TextBox::setSize(float boxSize)
 
 bool TextBox::isInBoundaries(float posX, float posY)
 {
-  return posX >= position.x && posX <= position.x + 30 * scale && posY > position.y && posY <= position.y + 30*scale;
+  return posX >= position.x && posX <= position.x + 30 * scale && posY > position.y && posY <= position.y + 30 * scale;
 }
 
 void TextBox::setHighlight(bool isHighlighted)
 {
   this->highlighted = isHighlighted;
-  if(isHighlighted){
+  if (isHighlighted)
+  {
     this->box.setOutlineColor(sf::Color(0, 150, 255));
     this->box.setOutlineThickness(3);
   }
-  else{
+  else
+  {
     this->box.setOutlineColor(sf::Color::Black);
     this->box.setOutlineThickness(1);
   }
@@ -112,6 +114,24 @@ void TextBox::setHighlight()
 {
   this->setHighlight(!this->highlighted);
 }
+
+void TextBox::onMouseMove(sf::Event::MouseMoveEvent mouseMoveEvent)
+{
+  if (isInBoundaries(mouseMoveEvent.x, mouseMoveEvent.y))
+  {
+    if (!this->mouseIn)
+    {
+      this->mouseIn = true;
+      this->box.setFillColor(sf::Color(200, 200, 200, 70));
+    }
+  }
+  else if (this->mouseIn)
+  {
+    this->mouseIn = false;
+    this->box.setFillColor(sf::Color::Transparent);
+  }
+}
+
 
 
 

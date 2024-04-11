@@ -14,24 +14,26 @@
 #include "objects/Object.h"
 #include "objects/numberGrid/NumberGrid.h"
 #include "objects/numberGrid/TextBox.h"
+#include "objects/numberGrid/Button.h"
 
 class Core
 {
 private:
+    //SFML graphics
     sf::VideoMode videoMode;
     sf::RenderWindow *window;
     sf::Event sfmlEvent;
+
+    //My objects
     std::vector<Object *> objects;
 
-    
-
-    NumberGrid *numberGrid;
-
+    //Init methods
     void initWindow();
     void initVariables();
 public:
     Core();
     ~Core();
+
     void startLoop();
 
     void render();

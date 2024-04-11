@@ -84,6 +84,13 @@ build CMakeFiles/SudokuSolver.dir/src/objects/numberGrid/TextBox.cpp.obj: CXX_CO
   OBJECT_DIR = CMakeFiles\SudokuSolver.dir
   OBJECT_FILE_DIR = CMakeFiles\SudokuSolver.dir\src\objects\numberGrid
 
+build CMakeFiles/SudokuSolver.dir/src/objects/numberGrid/Button.cpp.obj: CXX_COMPILER__SudokuSolver_Debug C$:/Users/Troja/Documents/_MyDocuments/GitHub/SudokuSolver/src/objects/numberGrid/Button.cpp || cmake_object_order_depends_target_SudokuSolver
+  DEP_FILE = CMakeFiles\SudokuSolver.dir\src\objects\numberGrid\Button.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always -std=gnu++1z
+  INCLUDES = -IC:/Users/Troja/Documents/_MyDocuments/GitHub/SudokuSolver/headers -IC:/SFML -IC:/SFML/include
+  OBJECT_DIR = CMakeFiles\SudokuSolver.dir
+  OBJECT_FILE_DIR = CMakeFiles\SudokuSolver.dir\src\objects\numberGrid
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target SudokuSolver
@@ -92,7 +99,7 @@ build CMakeFiles/SudokuSolver.dir/src/objects/numberGrid/TextBox.cpp.obj: CXX_CO
 #############################################
 # Link the executable SudokuSolver.exe
 
-build SudokuSolver.exe: CXX_EXECUTABLE_LINKER__SudokuSolver_Debug CMakeFiles/SudokuSolver.dir/src/main.cpp.obj CMakeFiles/SudokuSolver.dir/src/Core.cpp.obj CMakeFiles/SudokuSolver.dir/src/objects/Object.cpp.obj CMakeFiles/SudokuSolver.dir/src/objects/numberGrid/NumberGrid.cpp.obj CMakeFiles/SudokuSolver.dir/src/objects/numberGrid/TextBox.cpp.obj | C$:/SFML/lib/libsfml-system-d.a C$:/SFML/lib/libsfml-window-d.a C$:/SFML/lib/libsfml-graphics-d.a
+build SudokuSolver.exe: CXX_EXECUTABLE_LINKER__SudokuSolver_Debug CMakeFiles/SudokuSolver.dir/src/main.cpp.obj CMakeFiles/SudokuSolver.dir/src/Core.cpp.obj CMakeFiles/SudokuSolver.dir/src/objects/Object.cpp.obj CMakeFiles/SudokuSolver.dir/src/objects/numberGrid/NumberGrid.cpp.obj CMakeFiles/SudokuSolver.dir/src/objects/numberGrid/TextBox.cpp.obj CMakeFiles/SudokuSolver.dir/src/objects/numberGrid/Button.cpp.obj | C$:/SFML/lib/libsfml-system-d.a C$:/SFML/lib/libsfml-window-d.a C$:/SFML/lib/libsfml-graphics-d.a
   FLAGS = -g
   LINK_LIBRARIES = C:/SFML/lib/libsfml-system-d.a  C:/SFML/lib/libsfml-window-d.a  C:/SFML/lib/libsfml-graphics-d.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\SudokuSolver.dir

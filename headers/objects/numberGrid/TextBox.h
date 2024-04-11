@@ -11,8 +11,6 @@
 class TextBox : public Object
 {
 private:
-    //Universal TextBox font, separate method to get the font for possible load file error
-    static sf::Font font;
     static sf::Font getFont();
 
     //Size is easier handled through scale so scale it is
@@ -24,19 +22,20 @@ private:
     sf::RectangleShape box;
     bool highlighted;
 
-    //init methods to keep code tidy
+    //Initializers
     void initText();
-
     void initBox();
 public:
     TextBox();
     ~TextBox() override;
 
-    //Render + update ¯\_(ツ)_/¯
+    //Universal TextBox font, separate method to get the font for possible load file error
+    //Temporary, will move elsewhere in the future
+    static sf::Font font;
+
     void render(sf::RenderTarget *target) override;
     void update() override;
 
-    //setters
     void setText(std::string txt);
     void setString(sf::String str);
     void setPosition(float posX, float posY);
@@ -48,6 +47,9 @@ public:
     //Highlight texBox
     void setHighlight(bool isHighlighted);
     void setHighlight();
+
+    //Mouse hover event
+    void onMouseMove(sf::Event::MouseMoveEvent mouseMoveEvent) override;
 };
 
 

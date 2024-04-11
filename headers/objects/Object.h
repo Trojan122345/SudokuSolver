@@ -17,6 +17,8 @@ private:
     static int NextID;
     int ID;
     int getNextID();
+protected:
+    bool mouseIn, mouseDown;
 public:
     Object();
     virtual ~Object();
@@ -26,7 +28,12 @@ public:
 
     virtual bool isInBoundaries(float posX, float posY) = 0;
 
-    virtual void click(sf::Event::MouseButtonEvent mouseButtonEvent){};
+    virtual void onClick(sf::Event::MouseButtonEvent mouseButtonEvent){};
+    virtual void onMouseMove(sf::Event::MouseMoveEvent mouseMoveEvent){};
+    virtual void onMousePressed(sf::Event::MouseButtonEvent mouseButtonEvent){};
+    virtual void onMouseReleased(sf::Event::MouseButtonEvent mouseButtonEvent){};
+    virtual void textEntered(const sf::String &str){};
+    virtual void keyPressed(sf::Keyboard::Key){};
 
     [[nodiscard]] int getID() const;
     bool compare(Object* object) const;
