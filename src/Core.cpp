@@ -33,8 +33,11 @@ void Core::initVariables()
   auto *numberGrid = new NumberGrid(50, 50);
   objects.push_back(numberGrid);
 
-  auto *button = new Button(50+31*9+1+50, 75);
-  objects.push_back(button);
+  auto *solverButton = new SolverButton(50+31*9+1+50, 75, numberGrid);
+  objects.push_back(solverButton);
+
+  auto *eraseButton = new EraseButton(50+31*9+1+50, 150, numberGrid);
+  objects.push_back(eraseButton);
 }
 
 void Core::startLoop()

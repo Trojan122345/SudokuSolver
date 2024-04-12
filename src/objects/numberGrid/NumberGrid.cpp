@@ -6,7 +6,7 @@
 #include <regex>
 #include "objects/numberGrid/NumberGrid.h"
 
-NumberGrid::NumberGrid(float posX, float posY) : boxes(9)
+NumberGrid::NumberGrid(float posX, float posY) : cells(9)
 {
   initBorder(posX, posY);
   initGrid();
@@ -16,7 +16,7 @@ NumberGrid::NumberGrid(float posX, float posY) : boxes(9)
 NumberGrid::~NumberGrid()
 {
   this->highlightedBox = nullptr;
-  for (auto row: boxes)
+  for (auto row: cells)
   {
     for (auto &col: row)
     {
@@ -31,12 +31,12 @@ void NumberGrid::initBorder(float posX, float posY)
   this->position.x = posX;
   this->position.y = posY;
 
-  this->border.setFillColor(sf::Color::White);
-  this->border.setSize(sf::Vector2f(31 * 9 + 1, 31 * 9 + 1));
-  this->border.setScale(sf::Vector2f(1, 1));
-  this->border.setOutlineThickness(3);
-  this->border.setOutlineColor(sf::Color::Black);
-  this->border.setPosition(position);
+  this->gridBorder.setFillColor(sf::Color::White);
+  this->gridBorder.setSize(sf::Vector2f(31 * 9 + 1, 31 * 9 + 1));
+  this->gridBorder.setScale(sf::Vector2f(1, 1));
+  this->gridBorder.setOutlineThickness(3);
+  this->gridBorder.setOutlineColor(sf::Color::Black);
+  this->gridBorder.setPosition(position);
 }
 
 void NumberGrid::initGrid()
@@ -44,25 +44,25 @@ void NumberGrid::initGrid()
   float posX, posY;
   for (int i = 0; i < 9; i++)
   {
-    this->boxes[i] = std::vector<TextBox *>(9);
+    this->cells[i] = std::vector<TextBox *>(9);
     for (int ii = 0; ii < 9; ii++)
     {
       posX = this->position.x + 31.0f * (float) ii + (float) (ii / 3);
 
       posY = this->position.y + 31.0f * (float) i + (float) (i / 3);
 
-      this->boxes[i][ii] = new TextBox();
-      this->boxes[i][ii]->setPosition(posX, posY);
+      this->cells[i][ii] = new TextBox();
+      this->cells[i][ii]->setPosition(posX, posY);
     }
   }
 }
 
 void NumberGrid::render(sf::RenderTarget *target)
 {
-  target->draw(border);
+  target->draw(gridBorder);
 
 
-  for (auto row: boxes)
+  for (auto row: cells)
   {
     for (auto &box: row)
     {
@@ -70,7 +70,7 @@ void NumberGrid::render(sf::RenderTarget *target)
     }
   }
 
-  if(highlightedBox!= nullptr)
+  if (highlightedBox != nullptr)
     highlightedBox->render(target);
 }
 
@@ -81,8 +81,8 @@ void NumberGrid::update()
 
 bool NumberGrid::isInBoundaries(float posX, float posY)
 {
-  return posX > border.getPosition().x && posX < border.getPosition().x + border.getSize().x &&
-         posY > border.getPosition().y && posY < border.getPosition().y + border.getSize().y;
+  return posX > gridBorder.getPosition().x && posX < gridBorder.getPosition().x + gridBorder.getSize().x &&
+         posY > gridBorder.getPosition().y && posY < gridBorder.getPosition().y + gridBorder.getSize().y;
 }
 
 void NumberGrid::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
@@ -90,16 +90,16 @@ void NumberGrid::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
   bool br = false;
 
 
-  for (auto row: boxes)
+  for (auto row: cells)
   {
     for (auto &box: row)
     {
       if (box->isInBoundaries(mouseButtonEvent.x, mouseButtonEvent.y))
       {
-      this->highlightBox(box);
+        this->highlightBox(box);
 
-      br = true;
-      break;
+        br = true;
+        break;
       }
     }
     if (br)
@@ -127,7 +127,7 @@ void NumberGrid::movePressed(sf::Keyboard::Key keyPressed)
 {
   if (this->highlightedBox != nullptr)
   {
-    int boxPos = highlightedBox->getID() - this->boxes[0][0]->getID();
+    int boxPos = highlightedBox->getID() - this->cells[0][0]->getID();
     switch (keyPressed)
     {
       case sf::Keyboard::Left:
@@ -157,11 +157,11 @@ void NumberGrid::movePressed(sf::Keyboard::Key keyPressed)
       default:
         break;
     }
-    highlightBox(boxes[boxPos / 9][boxPos % 9]);
+    highlightBox(cells[boxPos / 9][boxPos % 9]);
   }
 }
 
-void NumberGrid::highlightBox(TextBox* box)
+void NumberGrid::highlightBox(TextBox *box)
 {
   if (this->highlightedBox != nullptr)
     this->highlightedBox->setHighlight(false);
@@ -179,7 +179,7 @@ void NumberGrid::highlightBox(TextBox* box)
 
 void NumberGrid::onMouseMove(sf::Event::MouseMoveEvent mouseMoveEvent)
 {
-  for (auto row: boxes)
+  for (auto row: cells)
   {
     for (auto &box: row)
     {
@@ -204,5 +204,34 @@ void NumberGrid::keyPressed(sf::Keyboard::Key key)
       break;
     default:
       break;
+  }
+}
+
+void NumberGrid::setText(const std::string& str, int cellRow, int cellCol)
+{
+  this->cells[cellRow][cellCol]->setText(str);
+}
+
+int **NumberGrid::getNumbers()
+{
+  int **ret = new int *[9];
+  for (int i = 0; i < 9; i++)
+  {
+    ret[i] = new int[9];
+    for (int ii = 0; ii < 9; ii++)
+    {
+      ret[i][ii] = cells[i][ii]->getNumberFromText();
+    }
+  }
+
+  return ret;
+}
+
+void NumberGrid::deleteAllText()
+{
+  for(int i = 0; i < 9; i++){
+    for(int ii = 0; ii < 9; ii ++){
+      setText("", i, ii);
+    }
   }
 }

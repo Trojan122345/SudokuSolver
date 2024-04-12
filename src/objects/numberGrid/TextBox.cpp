@@ -78,7 +78,7 @@ sf::Font TextBox::getFont()
   return temp;
 }
 
-//Sets size of the border - method actually creates scale based on the initial size which is then applied
+//Sets size of the gridBorder - method actually creates scale based on the initial size which is then applied
 //    this is necessary for correct text sizing and placement
 void TextBox::setSize(float boxSize)
 {
@@ -130,6 +130,14 @@ void TextBox::onMouseMove(sf::Event::MouseMoveEvent mouseMoveEvent)
     this->mouseIn = false;
     this->box.setFillColor(sf::Color::Transparent);
   }
+}
+
+int TextBox::getNumberFromText()
+{
+  std::string retStr = this->text.getString().toAnsiString();
+  if (retStr.empty())
+    retStr = "0 ";
+  return std::stoi(retStr);
 }
 
 

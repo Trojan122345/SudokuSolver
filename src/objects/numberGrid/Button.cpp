@@ -125,3 +125,42 @@ void Button::setText(std::string str)
   this->text.setString(str);
   this->adjustTextPosition();
 }
+
+//Solver button
+SolverButton::SolverButton(float posX, float posY, NumberGrid *ng) : Button(posX, posY), solver()
+{
+  this->numberGrid = ng;
+  solver.addTextBoxes(this->numberGrid->getCells());
+  this->setText("solve");
+}
+
+SolverButton::~SolverButton()
+{
+
+}
+
+void SolverButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
+{
+  solver.loadNumbers();
+  solver.solve();
+  solver.empty();
+}
+
+//Erase button
+EraseButton::EraseButton(float posX, float posY, NumberGrid *ng) : Button(posX, posY)
+{
+  this->numberGrid = ng;
+  this->setText("Delete all");
+}
+
+void EraseButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
+{
+  numberGrid->deleteAllText();
+}
+
+EraseButton::~EraseButton()
+{
+
+}
+
+//Erase button

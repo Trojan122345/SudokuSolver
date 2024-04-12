@@ -17,7 +17,7 @@ private:
     float scale;
     sf::Vector2f position;
 
-    //Text + border
+    //Text + gridBorder
     sf::Text text;
     sf::RectangleShape box;
     bool highlighted;
@@ -50,6 +50,8 @@ public:
 
     //Mouse hover event
     void onMouseMove(sf::Event::MouseMoveEvent mouseMoveEvent) override;
+
+    int getNumberFromText();
 };
 
 

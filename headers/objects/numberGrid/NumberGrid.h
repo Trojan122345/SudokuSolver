@@ -13,9 +13,9 @@ class NumberGrid : public Object
 {
 private:
     //Graphic objects
-    sf::RectangleShape border;
+    sf::RectangleShape gridBorder;
     sf::Vector2f position;
-    std::vector<std::vector<TextBox*>> boxes;
+    std::vector<std::vector<TextBox*>> cells;
 
     //initializers
     void initBorder(float posX, float posY);
@@ -44,6 +44,12 @@ public:
     //Text methods
     void textEntered(const sf::String &str) override;
     void keyPressed(sf::Keyboard::Key key) override;
+    void setText(const std::string& str, int cellRow, int cellCol);
+
+    //Get finalNumber matrix for the solver
+    int** getNumbers();
+    std::vector<std::vector<TextBox*>> getCells(){return cells;}
+    void deleteAllText();
 };
 
 

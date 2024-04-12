@@ -6,7 +6,10 @@
 #define SUDOKUSOLVER_BUTTON_H
 
 
+#include <functional>
 #include "objects/Object.h"
+#include "NumberGrid.h"
+#include "objects/solver/Solver.h"
 
 class Button : public Object
 {
@@ -44,6 +47,29 @@ public:
     void onMouseReleased(sf::Event::MouseButtonEvent mouseButtonEvent) override;
 
     void setText(std::string str);
+};
+
+class SolverButton : public Button
+{
+private:
+    NumberGrid *numberGrid;
+    Solver solver;
+public:
+    explicit SolverButton(float posX, float posY, NumberGrid *ng);
+
+    void onClick(sf::Event::MouseButtonEvent mouseButtonEvent) override;
+    ~SolverButton() override;
+};
+
+class EraseButton : public Button
+{
+private:
+    NumberGrid *numberGrid;
+public:
+    explicit EraseButton(float posX, float posY, NumberGrid *ng);
+
+    void onClick(sf::Event::MouseButtonEvent mouseButtonEvent) override;
+    ~EraseButton() override;
 };
 
 
