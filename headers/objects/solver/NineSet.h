@@ -41,6 +41,7 @@ public:
     //    - cross-checks all filled cells with numbers[], if number[numberInCell]=true
     //    - if not, updates number and removes it from marks in all other cells
     void updateChanges();
+    void reset();
 
     [[nodiscard]] bool isFinished() const;
 

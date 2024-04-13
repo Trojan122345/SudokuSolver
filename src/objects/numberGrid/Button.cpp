@@ -142,6 +142,7 @@ SolverButton::~SolverButton()
 void SolverButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
 {
   solver.loadNumbers();
+  std::cout<<"\n";
   solver.solve();
   solver.empty();
 }
@@ -156,6 +157,35 @@ EraseButton::EraseButton(float posX, float posY, NumberGrid *ng) : Button(posX, 
 void EraseButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
 {
   numberGrid->deleteAllText();
+  numberGrid->setText("1", 0, 0);
+  numberGrid->setText("8", 1, 0);
+  numberGrid->setText("4", 3, 0);
+  numberGrid->setText("5", 3, 1);
+  numberGrid->setText("9", 5, 1);
+  numberGrid->setText("2", 5, 2);
+  numberGrid->setText("7", 7, 1);
+  numberGrid->setText("6", 7, 2);
+  numberGrid->setText("4", 8, 2);
+  numberGrid->setText("3", 0, 3);
+  numberGrid->setText("8", 0, 6);
+  numberGrid->setText("1", 1, 5);
+  numberGrid->setText("4", 1, 6);
+  numberGrid->setText("7", 1, 7);
+  numberGrid->setText("2", 2, 3);
+  numberGrid->setText("5", 2, 4);
+  numberGrid->setText("2", 3, 6);
+  numberGrid->setText("8", 3, 7);
+  numberGrid->setText("3", 4, 4);
+  numberGrid->setText("6", 5, 7);
+  numberGrid->setText("7", 5, 8);
+  numberGrid->setText("6", 6, 4);
+  numberGrid->setText("5", 6, 5);
+  numberGrid->setText("4", 7, 3);
+  numberGrid->setText("8", 7, 8);
+  numberGrid->setText("3", 8, 5);
+  numberGrid->setText("6", 8, 6);
+  numberGrid->setText("9", 8, 8);
+  numberGrid->setText("9", 0, 2);
 }
 
 EraseButton::~EraseButton()

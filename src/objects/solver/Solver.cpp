@@ -133,7 +133,7 @@ bool Solver::checkLoneMarks()
     {
       for (int ii = 0; ii < 9; ii++)
       {
-        if (cells[i][ii]->checkLoneNumber())
+        if (cells[i][ii]->checkLoneNumber() >= 0)
         {
           rows[i].updateChanges();
           cols[ii].updateChanges();
@@ -186,7 +186,6 @@ bool Solver::checkSetsMissingNumbers()
       }
     }
     updateChanges();
-
   } while (repeat);
   return filled;
 }
@@ -231,18 +230,20 @@ bool Solver::checkSetsSingleMarks()
       }
     }
     updateChanges();
-
   } while (repeat);
   return filled;
 }
 
 void Solver::empty()
 {
-  for (auto &row: cells)
+  for (int i = 0; i < 9; i++)
   {
-    for (auto &cell: row)
+    for (int ii = 0; ii < 9; ii++)
     {
-      cell->empty();
+      cells[i][ii]->empty();
     }
+    rows[i].reset();
+    cols[i].reset();
+    boxes[i].reset();
   }
 }

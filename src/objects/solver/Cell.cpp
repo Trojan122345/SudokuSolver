@@ -28,15 +28,19 @@ void Cell::addTextBox(TextBox *cell)
 
 void Cell::fill(int number)
 {
-  this->finalNumber = number;
-  filled = true;
-  for (bool &mark: marks)
+  if (number >= 0)
   {
-    mark = false;
+    this->finalNumber = number;
+    filled = true;
+    for (bool &mark: marks)
+    {
+      mark = false;
+    }
+    markedNumbers = 0;
+    if (textBox != nullptr)
+      textBox->setText(std::to_string(finalNumber + 1));
   }
-  markedNumbers = 0;
-  if (textBox != nullptr)
-    textBox->setText(std::to_string(finalNumber + 1));
+  else empty();
 }
 
 void Cell::fill(TextBox *cell)
@@ -54,10 +58,7 @@ void Cell::fill()
   if (this->textBox != nullptr)
   {
     int number = textBox->getNumberFromText() - 1;
-    if (number != -1)
-    {
-      fill(number);
-    }
+    fill(number);
   }
 }
 
@@ -117,7 +118,7 @@ int Cell::checkLoneNumber()
     }
   }
 
-  return 0;
+  return -1;
 }
 
 void Cell::empty()
@@ -137,7 +138,7 @@ std::string Cell::marksToString()
 
   for (int i = 0; i < 9; i++)
   {
-    if(marks[i])
+    if (marks[i])
       ret += std::to_string(i) + " ";
   }
 

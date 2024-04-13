@@ -39,9 +39,9 @@ bool NineSet::checkLastNumber()
   if (filledNumbers == 8)
   {
     //Find the missing number
-    for (auto &number: numbers)
+    for(int i = 0; i < 9; i++)
     {
-      if (!number)
+      if (!numbers[i])
       {
         //Find the empty cell
         for (auto &cell: cells)
@@ -49,7 +49,7 @@ bool NineSet::checkLastNumber()
           if (!cell->isFilled())
           {
             //Fill the empty cell with the missing number
-            cell->fill(number);
+            cell->fill(i);
             return true;
           }
         }
@@ -64,15 +64,12 @@ bool NineSet::checkOnlyMark()
   bool filled = false;
   bool repeat;
 
-  int temp;
-
   if (filledNumbers < 8)
   {
     do
     {
       //repeat each time a number is filled - new possible single mark can be created
       repeat = false;
-      temp = 0;
       for(int i = 0;i<9;i++)
       {
         //Find unfilled numbers
@@ -98,7 +95,6 @@ bool NineSet::checkOnlyMark()
             tempCell = nullptr;
           }
         }
-        temp ++;
       }
     }while(repeat);
   }
@@ -127,6 +123,14 @@ void NineSet::updateChanges()
   }
 }
 
+void NineSet::reset()
+{
+  finished = false;
+  filledNumbers = 0;
+  for (auto &number: numbers)
+    number = false;
+}
+
 bool NineSet::isFinished() const
 {
   return finished;
@@ -145,5 +149,7 @@ std::string NineSet::toString()
     ret += "Cell " + std::to_string(i) + ": " + cells[i]->marksToString();
   }
 
-  return ret;
+  return ret + "\n";
 }
+
+
