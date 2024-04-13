@@ -12,15 +12,15 @@ Cell::Cell() : marks{}, textBox(nullptr)
   filled = false;
   for (bool &mark: marks)
   {
-    mark = true;
+    mark = false;
   }
-  markedNumbers = 9;
+  markedNumbers = 0;
   init = false;
 }
 
 Cell::~Cell()
 {
-
+  textBox = nullptr;
 }
 
 void Cell::addTextBox(TextBox *cell)
@@ -35,11 +35,10 @@ void Cell::fill(int number)
   {
     this->finalNumber = number;
     filled = true;
-    for (bool &mark: marks)
+    for (int i = 0; i < 9; i++)
     {
-      mark = false;
+      removeMark(i);
     }
-    markedNumbers = 0;
     if (textBox != nullptr)
     {
       textBox->setText(std::to_string(finalNumber + 1));
@@ -47,17 +46,22 @@ void Cell::fill(int number)
         std::this_thread::sleep_for(20ms);
     }
   }
-  else empty();
+  else
+  {
+    finalNumber = -1;
+    filled = false;
+    for (int i = 0; i < 9; i++)
+    {
+      mark(i);
+    }
+  }
 }
 
 void Cell::fill(TextBox *cell)
 {
   this->textBox = cell;
   int number = textBox->getNumberFromText() - 1;
-  if (number != -1)
-  {
-    fill(number);
-  }
+  fill(number);
 }
 
 void Cell::fill()
@@ -66,7 +70,7 @@ void Cell::fill()
   {
     int number = textBox->getNumberFromText() - 1;
     fill(number);
-    if(number!=-1)
+    if (number != -1)
       textBox->setBackgroundColor(sf::Color(100, 220, 255, 50));
     init = true;
   }
@@ -84,29 +88,31 @@ bool Cell::isFilled() const
 
 void Cell::mark(int number)
 {
-  bool isMarked = false;
-  for (auto markedNumber: marks)
-  {
-    if (markedNumber)
-    {
-      isMarked = true;
-      break;
-    }
-  }
-  if (!isMarked)
+  using namespace std::chrono_literals;
+  if (!marks[number])
   {
     marks[number] = true;
+    textBox->setMark(number, true);
     markedNumbers++;
   }
+  if (init)
+    std::this_thread::sleep_for(2ms);
 }
 
-void Cell::removeMark(int number)
+bool Cell::removeMark(int number)
 {
+  bool ret = false;
+  using namespace std::chrono_literals;
   if (marks[number])
   {
+    ret = true;
     marks[number] = false;
+    textBox->setMark(number, false);
     markedNumbers--;
   }
+  if (init)
+    std::this_thread::sleep_for(2ms);
+  return ret;
 }
 
 bool Cell::checkMarkedNumber(int number)
@@ -135,11 +141,10 @@ void Cell::empty()
 {
   finalNumber = -1;
   filled = false;
-  for (bool &mark: marks)
+  for (int i = 0; i < 9; i++)
   {
-    mark = true;
+    removeMark(i);
   }
-  markedNumbers = 9;
   init = false;
 }
 

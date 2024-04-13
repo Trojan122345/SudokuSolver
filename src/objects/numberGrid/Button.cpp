@@ -138,12 +138,22 @@ SolverButton::SolverButton(float posX, float posY, NumberGrid *ng) : Button(posX
 
 SolverButton::~SolverButton()
 {
+
+}
+
+void SolverButton::solve()
+{
+  solver.empty();
+  solver.loadNumbers();
+  solver.solve();
 }
 
 void SolverButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
 {
+  /*solver.empty();
   solver.loadNumbers();
-  std::thread{&Solver::solve, &solver}.detach();
+  std::thread{&Solver::solve, &solver}.detach();*/
+  std::thread{&SolverButton::solve, this}.detach();
 }
 
 //Erase button
@@ -206,7 +216,7 @@ void TestButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
       numberGrid->setText("4", 8, 6);
       numberGrid->setText("5", 8, 8);
       break;
-    case 3:
+    case 1:
       numberGrid->setText("4", 0, 2);
       numberGrid->setText("5", 1, 0);
       numberGrid->setText("3", 1, 5);
@@ -244,7 +254,7 @@ void TestButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
       numberGrid->setText("8", 7, 8);
       numberGrid->setText("1", 8, 6);
       break;
-    case 4:
+    case 3:
       numberGrid->setText("4", 0, 2);
       numberGrid->setText("2", 0, 7);
       numberGrid->setText("9", 0, 8);
@@ -273,7 +283,7 @@ void TestButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
       numberGrid->setText("9", 8, 1);
       numberGrid->setText("4", 8, 6);
       break;
-    case 1:
+    case 4:
     default:
       numberGrid->setText("5", 0, 3);
       numberGrid->setText("2", 0, 6);

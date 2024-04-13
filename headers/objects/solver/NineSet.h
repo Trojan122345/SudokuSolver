@@ -40,6 +40,9 @@ public:
     //This means:
     //    - cross-checks all filled cells with numbers[], if number[numberInCell]=true
     //    - if not, updates number and removes it from marks in all other cells
+
+    bool checkSingleRowCol(int &boxRowReturn, int &boxColReturn, int digit);
+
     void updateChanges();
     void reset();
 

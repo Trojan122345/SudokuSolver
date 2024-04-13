@@ -14,7 +14,10 @@ TextBox::TextBox()
 
   initText();
   initBox();
-  setPosition(50, 50);
+  for (bool &m: marks)
+  {
+    m = false;
+  }
 }
 
 TextBox::~TextBox()
@@ -26,6 +29,16 @@ void TextBox::render(sf::RenderTarget *target)
 {
   target->draw(box);
   target->draw(text);
+  for (int i = 0; i < 9; i++)
+  {
+    if (this->marks[i])
+    {
+      this->mark.setString(std::to_string(i + 1));
+      setTextPosition(mark, this->position.x + this->size.x / 4 * (i % 3 * 1.25f + 0.75f),
+                      this->position.y - 1 + this->size.y / 4 * (i / 3 * 1.25f + 0.75f));
+      target->draw(mark);
+    }
+  }
 }
 
 void TextBox::update()
@@ -38,10 +51,16 @@ void TextBox::initText()
   this->text.setCharacterSize(20);
   this->text.setFillColor(sf::Color::Black);
   this->text.setFont(font);
+
+  this->mark.setFont(font);
+  this->mark.setFillColor(sf::Color::Black);
+  this->mark.setCharacterSize(9);
 }
 
 void TextBox::initBox()
 {
+  this->size.x = 30;
+  this->size.y = 30;
   this->box.setSize(sf::Vector2f(30, 30));
   this->box.setFillColor(sf::Color::Transparent);
   this->box.setOutlineThickness(1);
@@ -51,19 +70,27 @@ void TextBox::initBox()
 void TextBox::setText(std::string txt)
 {
   this->text.setString(txt);
+  setTextPosition(text, position.x + size.x / 2, position.y-5 + size.y / 2);
 }
 
 void TextBox::setString(sf::String str)
 {
   this->text.setString(str);
+  setTextPosition(text, position.x + size.x / 2, position.y-5 + size.y / 2);
 }
 
 void TextBox::setPosition(float posX, float posY)
 {
   this->position.x = posX;
   this->position.y = posY;
-  this->text.setPosition(posX + 10 * this->scale, posY + 5 * this->scale);
   this->box.setPosition(posX, posY);
+  setTextPosition(text, posX + size.x / 2, posY + size.y / 2);
+}
+
+void TextBox::setTextPosition(sf::Text &txt, float posX, float posY)
+{
+  txt.setOrigin(txt.getLocalBounds().width / 2, txt.getLocalBounds().height / 2);
+  txt.setPosition(posX, posY);
 }
 
 sf::Font TextBox::getFont()
@@ -93,6 +120,18 @@ void TextBox::setSize(float boxSize)
 void TextBox::setBackgroundColor(sf::Color c)
 {
   this->box.setFillColor(c);
+}
+
+void TextBox::setMark(int digit, bool isSet)
+{
+  marks[digit] = isSet;
+}
+
+void TextBox::deleteMarks()
+{
+  for(auto &m : marks){
+    m = false;
+  }
 }
 
 bool TextBox::isInBoundaries(float posX, float posY)
@@ -144,6 +183,8 @@ int TextBox::getNumberFromText()
     retStr = "0 ";
   return std::stoi(retStr);
 }
+
+
 
 
 

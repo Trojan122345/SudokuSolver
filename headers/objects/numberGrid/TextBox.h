@@ -16,15 +16,18 @@ private:
     //Size is easier handled through scale so scale it is
     float scale;
     sf::Vector2f position;
+    sf::Vector2f size;
 
     //Text + gridBorder
-    sf::Text text;
+    sf::Text text, mark;
     sf::RectangleShape box;
     bool highlighted;
+    bool marks[9];
 
     //Initializers
     void initText();
     void initBox();
+    static void setTextPosition(sf::Text &txt, float posX, float posY);
 public:
     TextBox();
     ~TextBox() override;
@@ -41,6 +44,8 @@ public:
     void setPosition(float posX, float posY);
     void setSize(float boxSize);
     void setBackgroundColor(sf::Color c);
+    void setMark(int digit, bool isSet);
+    void deleteMarks();
 
     //Collision detection
     bool isInBoundaries(float posX, float posY) override;

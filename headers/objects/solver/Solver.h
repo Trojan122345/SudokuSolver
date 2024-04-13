@@ -21,6 +21,7 @@ private:
     bool checkLoneMarks();
     bool checkSetsMissingNumbers();
     bool checkSetsSingleMarks();
+    bool checkBoxSingleRowCols();
 public:
     Solver();
     ~Solver();

@@ -39,7 +39,7 @@ bool NineSet::checkLastNumber()
   if (filledNumbers == 8)
   {
     //Find the missing number
-    for(int i = 0; i < 9; i++)
+    for (int i = 0; i < 9; i++)
     {
       if (!numbers[i])
       {
@@ -70,7 +70,7 @@ bool NineSet::checkOnlyMark()
     {
       //repeat each time a number is filled - new possible single mark can be created
       repeat = false;
-      for(int i = 0;i<9;i++)
+      for (int i = 0; i < 9; i++)
       {
         //Find unfilled numbers
         if (!numbers[i])
@@ -96,7 +96,7 @@ bool NineSet::checkOnlyMark()
           }
         }
       }
-    }while(repeat);
+    } while (repeat);
   }
   else if (filledNumbers == 8)
   {
@@ -108,6 +108,40 @@ bool NineSet::checkOnlyMark()
   }
 
   return filled;
+}
+
+bool NineSet::checkSingleRowCol(int &boxRowReturn, int &boxColReturn, int digit)
+{
+  int rowCount = 0, colCount = 0;
+  boxRowReturn = -1;
+  boxColReturn = -1;
+  for (int i = 0; i < 9; i++)
+  {
+    if (cells[i]->checkMarkedNumber(digit))
+    {
+      if (boxRowReturn != i / 3)
+      {
+        rowCount++;
+        boxRowReturn = i / 3;
+      }
+      if (boxColReturn != i % 3)
+      {
+        colCount++;
+        boxColReturn = i % 3;
+      }
+    }
+  }
+  if (rowCount == 1)
+  {
+    boxColReturn = -1;
+    return true;
+  }
+  if (colCount == 1)
+  {
+    boxRowReturn = -1;
+    return true;
+  }
+  return false;
 }
 
 void NineSet::updateChanges()
@@ -139,13 +173,15 @@ bool NineSet::isFinished() const
 std::string NineSet::toString()
 {
   std::string ret = "Set numbers:\n";
-  for(int i = 0; i < 9; i++){
-    if(numbers[i])
+  for (int i = 0; i < 9; i++)
+  {
+    if (numbers[i])
       ret += std::to_string(i) + " ";
   }
 
   ret += "\n\n";
-  for(int i = 0; i < 9; i++){
+  for (int i = 0; i < 9; i++)
+  {
     ret += "Cell " + std::to_string(i) + ": " + cells[i]->marksToString();
   }
 

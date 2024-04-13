@@ -59,6 +59,7 @@ public:
 
     void onClick(sf::Event::MouseButtonEvent mouseButtonEvent) override;
     ~SolverButton() override;
+    void solve();
 };
 
 class EraseButton : public Button

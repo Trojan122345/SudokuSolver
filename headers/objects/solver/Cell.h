@@ -41,7 +41,7 @@ public:
 
     //Mark possible finalNumber
     void mark(int number);
-    void removeMark(int number);
+    bool removeMark(int number);
     bool checkMarkedNumber(int number);
 
     //Checks if cell has only one marked finalNumber

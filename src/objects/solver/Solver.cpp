@@ -55,7 +55,7 @@ void Solver::addTextBoxes(std::vector<std::vector<TextBox *>> grid)
   {
     for (int ii = 0; ii < 9; ii++)
     {
-      this->cells[i][ii]->fill(grid[i][ii]);
+      this->cells[i][ii]->addTextBox(grid[i][ii]);
     }
   }
 }
@@ -112,15 +112,27 @@ void Solver::updateChanges()
 
 void Solver::solve()
 {
-  bool repeat;
+  bool repeatTricks;
   do
   {
-    repeat = false;
-    repeat |= checkLoneMarks();
-    repeat |= checkSetsMissingNumbers();
-    repeat |= checkSetsSingleMarks();
-  } while (repeat);
-  empty();
+    repeatTricks = false;
+    bool repeat;
+    do
+    {
+      repeat = false;
+      repeat |= checkLoneMarks();
+      repeat |= checkSetsMissingNumbers();
+      repeat |= checkSetsSingleMarks();
+    } while (repeat);
+    for (int i = 0; i < 9; i++)
+    {
+      repeatTricks |= !boxes[i].isFinished();
+    }
+    if (repeatTricks)
+    {
+      repeatTricks = checkBoxSingleRowCols();
+    }
+  } while (repeatTricks);
 }
 
 
@@ -234,6 +246,43 @@ bool Solver::checkSetsSingleMarks()
     updateChanges();
   } while (repeat);
   return filled;
+}
+
+bool Solver::checkBoxSingleRowCols()
+{
+  bool altered = false;
+  for (int box = 0; box < 9; box++)
+  {
+    for (int digit = 0; digit < 9; digit++)
+    {
+      int boxRow = -1;
+      int boxCol = -1;
+      if (boxes[box].checkSingleRowCol(boxRow, boxCol, digit))
+      {
+        if (boxRow >= 0)
+        {
+          for (int col = 0; col < 9; col++)
+          {
+            if (col / 3 != box % 3)
+            {
+              altered |= cells[boxRow + (box / 3) * 3][col]->removeMark(digit);
+            }
+          }
+        }
+        else if (boxCol >= 0)
+        {
+          for (int row = 0; row < 9; row++)
+          {
+            if (row / 3 != box / 3)
+            {
+              altered |= cells[row][boxCol + (box % 3) * 3]->removeMark(digit);
+            }
+          }
+        }
+      }
+    }
+  }
+  return altered;
 }
 
 void Solver::empty()
