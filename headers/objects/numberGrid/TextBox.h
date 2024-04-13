@@ -40,6 +40,7 @@ public:
     void setString(sf::String str);
     void setPosition(float posX, float posY);
     void setSize(float boxSize);
+    void setBackgroundColor(sf::Color c);
 
     //Collision detection
     bool isInBoundaries(float posX, float posY) override;

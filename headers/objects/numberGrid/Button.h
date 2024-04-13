@@ -71,6 +71,23 @@ public:
     void onClick(sf::Event::MouseButtonEvent mouseButtonEvent) override;
     ~EraseButton() override;
 };
+class TestButton : public Button
+{
+private:
+    NumberGrid *numberGrid;
+    TextBox textBox;
+    bool tBoxHighlighted;
+public:
+    explicit TestButton(float posX, float posY, NumberGrid *ng);
+
+    void onClick(sf::Event::MouseButtonEvent mouseButtonEvent) override;
+    ~TestButton() override;
+    void render(sf::RenderTarget *target) override;
+    void textEntered(const sf::String &str) override;
+    void onMouseReleased(sf::Event::MouseButtonEvent mouseButtonEvent) override;
+    void keyPressed(sf::Keyboard::Key key) override;
+};
+
 
 
 #endif //SUDOKUSOLVER_BUTTON_H

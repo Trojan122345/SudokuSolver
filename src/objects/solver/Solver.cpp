@@ -120,7 +120,9 @@ void Solver::solve()
     repeat |= checkSetsMissingNumbers();
     repeat |= checkSetsSingleMarks();
   } while (repeat);
+  empty();
 }
+
 
 bool Solver::checkLoneMarks()
 {

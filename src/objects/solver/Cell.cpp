@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <thread>
 #include "objects/solver/Cell.h"
 
 Cell::Cell() : marks{}, textBox(nullptr)
@@ -14,6 +15,7 @@ Cell::Cell() : marks{}, textBox(nullptr)
     mark = true;
   }
   markedNumbers = 9;
+  init = false;
 }
 
 Cell::~Cell()
@@ -28,6 +30,7 @@ void Cell::addTextBox(TextBox *cell)
 
 void Cell::fill(int number)
 {
+  using namespace std::chrono_literals;
   if (number >= 0)
   {
     this->finalNumber = number;
@@ -38,7 +41,11 @@ void Cell::fill(int number)
     }
     markedNumbers = 0;
     if (textBox != nullptr)
+    {
       textBox->setText(std::to_string(finalNumber + 1));
+      if (init)
+        std::this_thread::sleep_for(20ms);
+    }
   }
   else empty();
 }
@@ -59,6 +66,9 @@ void Cell::fill()
   {
     int number = textBox->getNumberFromText() - 1;
     fill(number);
+    if(number!=-1)
+      textBox->setBackgroundColor(sf::Color(100, 220, 255, 50));
+    init = true;
   }
 }
 
@@ -130,6 +140,7 @@ void Cell::empty()
     mark = true;
   }
   markedNumbers = 9;
+  init = false;
 }
 
 std::string Cell::marksToString()

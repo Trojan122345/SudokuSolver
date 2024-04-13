@@ -24,6 +24,8 @@ private:
 
     bool filled;
     TextBox *textBox;
+
+    bool init;
 public:
     Cell();
     ~Cell();

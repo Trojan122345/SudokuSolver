@@ -90,6 +90,11 @@ void TextBox::setSize(float boxSize)
   this->setPosition(position.x, position.y);
 }
 
+void TextBox::setBackgroundColor(sf::Color c)
+{
+  this->box.setFillColor(c);
+}
+
 bool TextBox::isInBoundaries(float posX, float posY)
 {
   return posX >= position.x && posX <= position.x + 30 * scale && posY > position.y && posY <= position.y + 30 * scale;

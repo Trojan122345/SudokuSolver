@@ -3,6 +3,8 @@
 //
 
 #include <iostream>
+#include <thread>
+#include <regex>
 #include "objects/numberGrid/Button.h"
 #include "objects/numberGrid/TextBox.h"
 
@@ -58,8 +60,8 @@ void Button::initText()
 
 void Button::adjustTextPosition()
 {
-  this->text.setOrigin(this->text.getLocalBounds().width/2, this->text.getLocalBounds().height/2);
-  this->text.setPosition(this->position.x + this->size.x/2, this->position.y + this->size.y/2);
+  this->text.setOrigin(this->text.getLocalBounds().width / 2, this->text.getLocalBounds().height / 2);
+  this->text.setPosition(this->position.x + this->size.x / 2, this->position.y + this->size.y / 2);
 }
 
 void Button::render(sf::RenderTarget *target)
@@ -136,15 +138,12 @@ SolverButton::SolverButton(float posX, float posY, NumberGrid *ng) : Button(posX
 
 SolverButton::~SolverButton()
 {
-
 }
 
 void SolverButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
 {
   solver.loadNumbers();
-  std::cout<<"\n";
-  solver.solve();
-  solver.empty();
+  std::thread{&Solver::solve, &solver}.detach();
 }
 
 //Erase button
@@ -157,35 +156,6 @@ EraseButton::EraseButton(float posX, float posY, NumberGrid *ng) : Button(posX, 
 void EraseButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
 {
   numberGrid->deleteAllText();
-  numberGrid->setText("1", 0, 0);
-  numberGrid->setText("8", 1, 0);
-  numberGrid->setText("4", 3, 0);
-  numberGrid->setText("5", 3, 1);
-  numberGrid->setText("9", 5, 1);
-  numberGrid->setText("2", 5, 2);
-  numberGrid->setText("7", 7, 1);
-  numberGrid->setText("6", 7, 2);
-  numberGrid->setText("4", 8, 2);
-  numberGrid->setText("3", 0, 3);
-  numberGrid->setText("8", 0, 6);
-  numberGrid->setText("1", 1, 5);
-  numberGrid->setText("4", 1, 6);
-  numberGrid->setText("7", 1, 7);
-  numberGrid->setText("2", 2, 3);
-  numberGrid->setText("5", 2, 4);
-  numberGrid->setText("2", 3, 6);
-  numberGrid->setText("8", 3, 7);
-  numberGrid->setText("3", 4, 4);
-  numberGrid->setText("6", 5, 7);
-  numberGrid->setText("7", 5, 8);
-  numberGrid->setText("6", 6, 4);
-  numberGrid->setText("5", 6, 5);
-  numberGrid->setText("4", 7, 3);
-  numberGrid->setText("8", 7, 8);
-  numberGrid->setText("3", 8, 5);
-  numberGrid->setText("6", 8, 6);
-  numberGrid->setText("9", 8, 8);
-  numberGrid->setText("9", 0, 2);
 }
 
 EraseButton::~EraseButton()
@@ -193,4 +163,183 @@ EraseButton::~EraseButton()
 
 }
 
-//Erase button
+//Test button
+TestButton::TestButton(float posX, float posY, NumberGrid *ng) : Button(posX, posY)
+{
+  numberGrid = ng;
+  this->setText("Test fill");
+  this->textBox.setPosition(posX + 200, posY);
+}
+
+void TestButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
+{
+  numberGrid->deleteAllText();
+  switch (textBox.getNumberFromText())
+  {
+    case 2:
+      numberGrid->setText("7", 0, 0);
+      numberGrid->setText("4", 0, 2);
+      numberGrid->setText("1", 0, 6);
+      numberGrid->setText("2", 1, 3);
+      numberGrid->setText("3", 1, 6);
+      numberGrid->setText("9", 1, 8);
+      numberGrid->setText("5", 2, 1);
+      numberGrid->setText("1", 2, 4);
+      numberGrid->setText("6", 2, 5);
+      numberGrid->setText("2", 2, 8);
+      numberGrid->setText("8", 3, 0);
+      numberGrid->setText("7", 3, 1);
+      numberGrid->setText("2", 3, 2);
+      numberGrid->setText("9", 3, 4);
+      numberGrid->setText("5", 5, 4);
+      numberGrid->setText("9", 5, 6);
+      numberGrid->setText("1", 5, 7);
+      numberGrid->setText("8", 5, 8);
+      numberGrid->setText("5", 6, 0);
+      numberGrid->setText("4", 6, 3);
+      numberGrid->setText("8", 6, 4);
+      numberGrid->setText("2", 6, 7);
+      numberGrid->setText("2", 7, 0);
+      numberGrid->setText("7", 7, 2);
+      numberGrid->setText("9", 7, 5);
+      numberGrid->setText("3", 8, 2);
+      numberGrid->setText("4", 8, 6);
+      numberGrid->setText("5", 8, 8);
+      break;
+    case 3:
+      numberGrid->setText("4", 0, 2);
+      numberGrid->setText("5", 1, 0);
+      numberGrid->setText("3", 1, 5);
+      numberGrid->setText("6", 1, 6);
+      numberGrid->setText("6", 2, 0);
+      numberGrid->setText("3", 2, 1);
+      numberGrid->setText("2", 2, 2);
+      numberGrid->setText("4", 2, 3);
+      numberGrid->setText("1", 2, 4);
+      numberGrid->setText("8", 2, 5);
+      numberGrid->setText("9", 3, 0);
+      numberGrid->setText("7", 3, 2);
+      numberGrid->setText("2", 3, 4);
+      numberGrid->setText("4", 3, 5);
+      numberGrid->setText("3", 3, 8);
+      numberGrid->setText("4", 4, 1);
+      numberGrid->setText("1", 4, 2);
+      numberGrid->setText("6", 4, 3);
+      numberGrid->setText("7", 4, 5);
+      numberGrid->setText("2", 4, 6);
+      numberGrid->setText("9", 4, 7);
+      numberGrid->setText("2", 5, 0);
+      numberGrid->setText("9", 5, 3);
+      numberGrid->setText("3", 5, 4);
+      numberGrid->setText("4", 5, 6);
+      numberGrid->setText("1", 5, 8);
+      numberGrid->setText("3", 6, 3);
+      numberGrid->setText("6", 6, 4);
+      numberGrid->setText("1", 6, 5);
+      numberGrid->setText("5", 6, 6);
+      numberGrid->setText("2", 6, 7);
+      numberGrid->setText("7", 6, 8);
+      numberGrid->setText("3", 7, 2);
+      numberGrid->setText("7", 7, 3);
+      numberGrid->setText("8", 7, 8);
+      numberGrid->setText("1", 8, 6);
+      break;
+    case 4:
+      numberGrid->setText("4", 0, 2);
+      numberGrid->setText("2", 0, 7);
+      numberGrid->setText("9", 0, 8);
+      numberGrid->setText("6", 1, 2);
+      numberGrid->setText("1", 1, 3);
+      numberGrid->setText("7", 1, 8);
+      numberGrid->setText("7", 2, 1);
+      numberGrid->setText("2", 2, 2);
+      numberGrid->setText("9", 2, 4);
+      numberGrid->setText("3", 2, 5);
+      numberGrid->setText("8", 3, 1);
+      numberGrid->setText("9", 3, 2);
+      numberGrid->setText("3", 3, 8);
+      numberGrid->setText("2", 4, 4);
+      numberGrid->setText("6", 5, 0);
+      numberGrid->setText("5", 5, 6);
+      numberGrid->setText("4", 5, 7);
+      numberGrid->setText("9", 6, 3);
+      numberGrid->setText("3", 6, 4);
+      numberGrid->setText("8", 6, 6);
+      numberGrid->setText("1", 6, 7);
+      numberGrid->setText("1", 7, 0);
+      numberGrid->setText("4", 7, 5);
+      numberGrid->setText("9", 7, 6);
+      numberGrid->setText("7", 8, 0);
+      numberGrid->setText("9", 8, 1);
+      numberGrid->setText("4", 8, 6);
+      break;
+    case 1:
+    default:
+      numberGrid->setText("5", 0, 3);
+      numberGrid->setText("2", 0, 6);
+      numberGrid->setText("7", 0, 7);
+      numberGrid->setText("8", 1, 4);
+      numberGrid->setText("7", 1, 5);
+      numberGrid->setText("9", 1, 8);
+      numberGrid->setText("8", 2, 6);
+      numberGrid->setText("4", 2, 8);
+      numberGrid->setText("2", 3, 3);
+      numberGrid->setText("4", 3, 7);
+      numberGrid->setText("7", 4, 0);
+      numberGrid->setText("1", 4, 2);
+      numberGrid->setText("5", 4, 6);
+      numberGrid->setText("3", 4, 8);
+      numberGrid->setText("9", 5, 1);
+      numberGrid->setText("1", 5, 5);
+      numberGrid->setText("8", 6, 0);
+      numberGrid->setText("9", 6, 2);
+      numberGrid->setText("1", 7, 0);
+      numberGrid->setText("6", 7, 3);
+      numberGrid->setText("7", 7, 4);
+      numberGrid->setText("4", 8, 1);
+      numberGrid->setText("7", 8, 2);
+      numberGrid->setText("2", 8, 5);
+      break;
+  }
+}
+
+TestButton::~TestButton()
+{
+
+}
+
+void TestButton::render(sf::RenderTarget *target)
+{
+  Button::render(target);
+  textBox.render(target);
+}
+
+void TestButton::textEntered(const sf::String &str)
+{
+  std::string s = str.toAnsiString();
+  std::regex reg("[1-9]");
+  if (tBoxHighlighted && std::regex_match(s, reg))
+    this->textBox.setString(str);
+}
+
+void TestButton::onMouseReleased(sf::Event::MouseButtonEvent mouseButtonEvent)
+{
+  Button::onMouseReleased(mouseButtonEvent);
+  if (textBox.isInBoundaries(mouseButtonEvent.x, mouseButtonEvent.y))
+  {
+    tBoxHighlighted = !tBoxHighlighted;
+    textBox.setHighlight(tBoxHighlighted);
+  }
+  else
+  {
+    tBoxHighlighted = false;
+    textBox.setHighlight(tBoxHighlighted);
+  }
+}
+
+void TestButton::keyPressed(sf::Keyboard::Key key)
+{
+  if(tBoxHighlighted && key == sf::Keyboard::BackSpace||key == sf::Keyboard::Delete){
+    textBox.setText("");
+  }
+}

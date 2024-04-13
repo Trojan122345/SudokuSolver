@@ -232,6 +232,7 @@ void NumberGrid::deleteAllText()
   for(int i = 0; i < 9; i++){
     for(int ii = 0; ii < 9; ii ++){
       setText("", i, ii);
+      cells[i][ii]->setBackgroundColor(sf::Color::Transparent);
     }
   }
 }
