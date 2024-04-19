@@ -10,6 +10,7 @@
 #include "objects/Object.h"
 #include "NumberGrid.h"
 #include "objects/solver/Solver.h"
+#include <thread>
 
 class Button : public Object
 {
@@ -34,7 +35,7 @@ public:
     Button(float posX, float posY);
     ~Button() override;
 
-    void render(sf::RenderTarget *target) override;
+    void render(sf::RenderTarget* target) override;
     void update() override;
 
     //Collision check
@@ -52,43 +53,48 @@ public:
 class SolverButton : public Button
 {
 private:
-    NumberGrid *numberGrid;
+    NumberGrid* numberGrid;
     Solver solver;
+    bool pauseSolver, solverDone, solving;
+    sf::Text resultText;
 public:
-    explicit SolverButton(float posX, float posY, NumberGrid *ng);
+    explicit SolverButton(float posX, float posY, NumberGrid* ng);
+    void render(sf::RenderTarget* target) override;
+    void update() override;
 
-    void onClick(sf::Event::MouseButtonEvent mouseButtonEvent) override;
     ~SolverButton() override;
     void solve();
+    void onClick(sf::Event::MouseButtonEvent mouseButtonEvent) override;
 };
 
 class EraseButton : public Button
 {
 private:
-    NumberGrid *numberGrid;
+    NumberGrid* numberGrid;
 public:
-    explicit EraseButton(float posX, float posY, NumberGrid *ng);
+    explicit EraseButton(float posX, float posY, NumberGrid* ng);
 
     void onClick(sf::Event::MouseButtonEvent mouseButtonEvent) override;
     ~EraseButton() override;
 };
+
 class TestButton : public Button
 {
 private:
-    NumberGrid *numberGrid;
+    NumberGrid* numberGrid;
     TextBox textBox;
     bool tBoxHighlighted;
 public:
-    explicit TestButton(float posX, float posY, NumberGrid *ng);
+    explicit TestButton(float posX, float posY, NumberGrid* ng);
 
-    void onClick(sf::Event::MouseButtonEvent mouseButtonEvent) override;
     ~TestButton() override;
-    void render(sf::RenderTarget *target) override;
-    void textEntered(const sf::String &str) override;
-    void onMouseReleased(sf::Event::MouseButtonEvent mouseButtonEvent) override;
-    void keyPressed(sf::Keyboard::Key key) override;
-};
+    void render(sf::RenderTarget* target) override;
 
+    void textEntered(const sf::String &str) override;
+    void keyPressed(sf::Keyboard::Key key) override;
+    void onClick(sf::Event::MouseButtonEvent mouseButtonEvent) override;
+    void onMouseReleased(sf::Event::MouseButtonEvent mouseButtonEvent) override;
+};
 
 
 #endif //SUDOKUSOLVER_BUTTON_H

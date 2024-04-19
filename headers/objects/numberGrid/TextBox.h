@@ -36,7 +36,7 @@ public:
     //Temporary, will move elsewhere in the future
     static sf::Font font;
 
-    void render(sf::RenderTarget *target) override;
+    void render(sf::RenderTarget* target) override;
     void update() override;
 
     void setText(std::string txt);

@@ -44,7 +44,7 @@ void NumberGrid::initGrid()
   float posX, posY;
   for (int i = 0; i < 9; i++)
   {
-    this->cells[i] = std::vector<TextBox *>(9);
+    this->cells[i] = std::vector<TextBox*>(9);
     for (int ii = 0; ii < 9; ii++)
     {
       posX = this->position.x + 31.0f * (float) ii + (float) (ii / 3);
@@ -57,7 +57,7 @@ void NumberGrid::initGrid()
   }
 }
 
-void NumberGrid::render(sf::RenderTarget *target)
+void NumberGrid::render(sf::RenderTarget* target)
 {
   target->draw(gridBorder);
 
@@ -161,7 +161,7 @@ void NumberGrid::movePressed(sf::Keyboard::Key keyPressed)
   }
 }
 
-void NumberGrid::highlightBox(TextBox *box)
+void NumberGrid::highlightBox(TextBox* box)
 {
   if (this->highlightedBox != nullptr)
     this->highlightedBox->setHighlight(false);
@@ -207,14 +207,14 @@ void NumberGrid::keyPressed(sf::Keyboard::Key key)
   }
 }
 
-void NumberGrid::setText(const std::string& str, int cellRow, int cellCol)
+void NumberGrid::setText(const std::string &str, int cellRow, int cellCol)
 {
   this->cells[cellRow][cellCol]->setText(str);
 }
 
-int **NumberGrid::getNumbers()
+int** NumberGrid::getNumbers()
 {
-  int **ret = new int *[9];
+  int** ret = new int* [9];
   for (int i = 0; i < 9; i++)
   {
     ret[i] = new int[9];
@@ -229,8 +229,10 @@ int **NumberGrid::getNumbers()
 
 void NumberGrid::deleteAllText()
 {
-  for(int i = 0; i < 9; i++){
-    for(int ii = 0; ii < 9; ii ++){
+  for (int i = 0; i < 9; i++)
+  {
+    for (int ii = 0; ii < 9; ii++)
+    {
       cells[i][ii]->setText("");
       cells[i][ii]->deleteMarks();
       cells[i][ii]->setBackgroundColor(sf::Color::Transparent);

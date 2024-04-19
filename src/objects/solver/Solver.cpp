@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <thread>
 #include "objects/solver/Solver.h"
 
 Solver::Solver() : cells(9), rows(9), cols(9), boxes(9)
@@ -15,7 +16,7 @@ Solver::~Solver()
 {
   for (int i = 0; i < 9; i++)
   {
-    this->cells[i] = std::vector<Cell *>(9);
+    this->cells[i] = std::vector<Cell*>(9);
     for (int ii = 0; ii < 9; ii++)
     {
       delete this->cells[i][ii];
@@ -28,7 +29,7 @@ void Solver::initCells()
 {
   for (int i = 0; i < 9; i++)
   {
-    this->cells[i] = std::vector<Cell *>(9);
+    this->cells[i] = std::vector<Cell*>(9);
     for (int ii = 0; ii < 9; ii++)
     {
       this->cells[i][ii] = new Cell();
@@ -49,7 +50,7 @@ void Solver::initSets()
   }
 }
 
-void Solver::addTextBoxes(std::vector<std::vector<TextBox *>> grid)
+void Solver::addTextBoxes(std::vector<std::vector<TextBox*>> grid)
 {
   for (int i = 0; i < 9; i++)
   {
@@ -60,40 +61,13 @@ void Solver::addTextBoxes(std::vector<std::vector<TextBox *>> grid)
   }
 }
 
-void Solver::loadNumbers(int **numbers)
-{
-  for (int i = 0; i < 9; i++)
-  {
-    for (int ii = 0; ii < 9; ii++)
-    {
-      if (numbers[i][ii] != 0)
-        this->cells[i][ii]->fill(numbers[i][ii] - 1);
-    }
-  }
-
-  updateChanges();
-}
-
-void Solver::loadNumbers(std::vector<std::vector<TextBox *>> grid)
-{
-  for (int i = 0; i < 9; i++)
-  {
-    for (int ii = 0; ii < 9; ii++)
-    {
-      this->cells[i][ii]->fill(grid[i][ii]);
-    }
-  }
-
-  updateChanges();
-}
-
 void Solver::loadNumbers()
 {
   for (auto &row: cells)
   {
     for (auto &cell: row)
     {
-      cell->fill();
+      cell->fillFromTextBox();
     }
   }
 
@@ -110,12 +84,18 @@ void Solver::updateChanges()
   }
 }
 
-void Solver::solve()
+void Solver::solve(bool &pause, bool &done)
 {
-  bool repeatTricks;
+  doPause = &pause;
+  bool doAdvanced;
   do
   {
-    repeatTricks = false;
+    while (pause)
+    {
+      using namespace std::chrono_literals;
+      std::this_thread::sleep_for(2ms);
+    }
+    doAdvanced = false;
     bool repeat;
     do
     {
@@ -126,13 +106,16 @@ void Solver::solve()
     } while (repeat);
     for (int i = 0; i < 9; i++)
     {
-      repeatTricks |= !boxes[i].isFinished();
+      doAdvanced |= !boxes[i].isSolved();
     }
-    if (repeatTricks)
+    if (doAdvanced)
     {
-      repeatTricks = checkBoxSingleRowCols();
+      doAdvanced = checkBoxSingleRowCols();
+      doAdvanced |= checkLimitedCellMarks();
     }
-  } while (repeatTricks);
+  } while (doAdvanced);
+  updateChanges();
+  done = true;
 }
 
 
@@ -147,7 +130,7 @@ bool Solver::checkLoneMarks()
     {
       for (int ii = 0; ii < 9; ii++)
       {
-        if (cells[i][ii]->checkLoneNumber() >= 0)
+        if (cells[i][ii]->checkLoneMark() >= 0)
         {
           rows[i].updateChanges();
           cols[ii].updateChanges();
@@ -285,6 +268,29 @@ bool Solver::checkBoxSingleRowCols()
   return altered;
 }
 
+bool Solver::checkLimitedCellMarks()
+{
+  bool filled = false;
+  //Rows check
+  for (auto &row: rows)
+  {
+    filled |= row.checkLimitedMarks();
+  }
+
+  //Cols check
+  for (auto &col: cols)
+  {
+    filled |= col.checkLimitedMarks();
+  }
+
+  //Boxes check
+  for (auto &box: boxes)
+  {
+    filled |= box.checkLimitedMarks();
+  }
+  return filled;
+}
+
 void Solver::empty()
 {
   for (int i = 0; i < 9; i++)
@@ -297,4 +303,18 @@ void Solver::empty()
     cols[i].reset();
     boxes[i].reset();
   }
+}
+
+bool Solver::checkConflicts()
+{
+  for (int i = 0; i < 9; i++)
+  {
+    if (boxes[i].checkForConflicts())
+      return true;
+    if (cols[i].checkForConflicts())
+      return true;
+    if (rows[i].checkForConflicts())
+      return true;
+  }
+  return false;
 }

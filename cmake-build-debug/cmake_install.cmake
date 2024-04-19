@@ -34,7 +34,12 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "C:/Users/Troja/Documents/_MyDocuments/Programming/minGW 7.3.0/mingw64/bin/objdump.exe")
+  set(CMAKE_OBJDUMP "C:/Users/Troja/Documents/_MyDocuments/Programming/MinGW 11.0 win32/mingw64/bin/objdump.exe")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("C:/Users/Troja/Documents/_MyDocuments/GitHub/SudokuSolver/cmake-build-debug/_deps/googletest-build/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)

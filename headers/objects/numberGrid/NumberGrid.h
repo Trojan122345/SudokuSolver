@@ -22,7 +22,7 @@ private:
     void initGrid();
 
     //Highlight related stuff
-    TextBox *highlightedBox;
+    TextBox* highlightedBox;
     void highlightBox(TextBox* box);
 
     //Key methods
@@ -31,7 +31,7 @@ private:
 public:
     explicit NumberGrid(float posX, float posY);
     ~NumberGrid() override;
-    void render(sf::RenderTarget *target) override;
+    void render(sf::RenderTarget* target) override;
     void update() override;
 
     //Collision check
@@ -44,11 +44,14 @@ public:
     //Text methods
     void textEntered(const sf::String &str) override;
     void keyPressed(sf::Keyboard::Key key) override;
-    void setText(const std::string& str, int cellRow, int cellCol);
+    void setText(const std::string &str, int cellRow, int cellCol);
 
-    //Get finalNumber matrix for the solver
+    //Get finalDigit matrix for the solver
     int** getNumbers();
-    std::vector<std::vector<TextBox*>> getCells(){return cells;}
+
+    std::vector<std::vector<TextBox*>> getCells()
+    { return cells; }
+
     void deleteAllText();
 };
 

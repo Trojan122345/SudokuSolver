@@ -64,7 +64,7 @@ void Button::adjustTextPosition()
   this->text.setPosition(this->position.x + this->size.x / 2, this->position.y + this->size.y / 2);
 }
 
-void Button::render(sf::RenderTarget *target)
+void Button::render(sf::RenderTarget* target)
 {
   target->draw(sprite);
   target->draw(text);
@@ -129,11 +129,18 @@ void Button::setText(std::string str)
 }
 
 //Solver button
-SolverButton::SolverButton(float posX, float posY, NumberGrid *ng) : Button(posX, posY), solver()
+SolverButton::SolverButton(float posX, float posY, NumberGrid* ng) : Button(posX, posY), solver()
 {
+  pauseSolver = false;
+  solverDone = false;
+  solving = false;
   this->numberGrid = ng;
   solver.addTextBoxes(this->numberGrid->getCells());
-  this->setText("solve");
+  this->setText("Solve");
+  resultText.setFont(TextBox::font);
+  resultText.setFillColor(sf::Color::Black);
+  resultText.setCharacterSize(25);
+  resultText.setPosition(250, 20);
 }
 
 SolverButton::~SolverButton()
@@ -145,19 +152,52 @@ void SolverButton::solve()
 {
   solver.empty();
   solver.loadNumbers();
-  solver.solve();
+  solver.solve(pauseSolver, solverDone);
 }
 
 void SolverButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
 {
-  /*solver.empty();
-  solver.loadNumbers();
-  std::thread{&Solver::solve, &solver}.detach();*/
-  std::thread{&SolverButton::solve, this}.detach();
+  if (!solving)
+  {
+    std::thread{&SolverButton::solve, this}.detach();
+    solving = true;
+    this->setText("Pause");
+  }
+  else if (solving && !pauseSolver)
+  {
+    pauseSolver = true;
+    this->setText("Resume");
+  }
+  else if (solving && pauseSolver)
+  {
+    pauseSolver = false;
+    this->setText("Pause");
+  }
+}
+
+void SolverButton::render(sf::RenderTarget* target)
+{
+  Button::render(target);
+  target->draw(resultText);
+}
+
+void SolverButton::update()
+{
+  if (solverDone)
+  {
+    solving = false;
+    pauseSolver = false;
+    this->setText("Solve");
+    solverDone = false;
+    if (!solver.checkConflicts())
+      resultText.setString("Success!");
+    else
+      resultText.setString("Failed!");
+  }
 }
 
 //Erase button
-EraseButton::EraseButton(float posX, float posY, NumberGrid *ng) : Button(posX, posY)
+EraseButton::EraseButton(float posX, float posY, NumberGrid* ng) : Button(posX, posY)
 {
   this->numberGrid = ng;
   this->setText("Delete all");
@@ -174,7 +214,7 @@ EraseButton::~EraseButton()
 }
 
 //Test button
-TestButton::TestButton(float posX, float posY, NumberGrid *ng) : Button(posX, posY)
+TestButton::TestButton(float posX, float posY, NumberGrid* ng) : Button(posX, posY)
 {
   numberGrid = ng;
   this->setText("Test fill");
@@ -284,7 +324,6 @@ void TestButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
       numberGrid->setText("4", 8, 6);
       break;
     case 4:
-    default:
       numberGrid->setText("5", 0, 3);
       numberGrid->setText("2", 0, 6);
       numberGrid->setText("7", 0, 7);
@@ -310,6 +349,35 @@ void TestButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
       numberGrid->setText("7", 8, 2);
       numberGrid->setText("2", 8, 5);
       break;
+    case 5:
+    default:
+      numberGrid->setText("6", 0, 1);
+      numberGrid->setText("3", 0, 4);
+      numberGrid->setText("9", 0, 8);
+      numberGrid->setText("7", 1, 0);
+      numberGrid->setText("3", 1, 1);
+      numberGrid->setText("5", 1, 7);
+      numberGrid->setText("1", 1, 8);
+      numberGrid->setText("5", 2, 0);
+      numberGrid->setText("8", 2, 5);
+      numberGrid->setText("1", 3, 0);
+      numberGrid->setText("6", 3, 4);
+      numberGrid->setText("2", 3, 5);
+      numberGrid->setText("9", 4, 2);
+      numberGrid->setText("7", 4, 6);
+      numberGrid->setText("9", 5, 3);
+      numberGrid->setText("7", 5, 4);
+      numberGrid->setText("5", 5, 8);
+      numberGrid->setText("3", 6, 3);
+      numberGrid->setText("4", 6, 8);
+      numberGrid->setText("4", 7, 0);
+      numberGrid->setText("1", 7, 1);
+      numberGrid->setText("7", 7, 7);
+      numberGrid->setText("6", 7, 8);
+      numberGrid->setText("8", 8, 0);
+      numberGrid->setText("5", 8, 4);
+      numberGrid->setText("1", 8, 7);
+      break;
   }
 }
 
@@ -318,7 +386,7 @@ TestButton::~TestButton()
 
 }
 
-void TestButton::render(sf::RenderTarget *target)
+void TestButton::render(sf::RenderTarget* target)
 {
   Button::render(target);
   textBox.render(target);
@@ -349,7 +417,8 @@ void TestButton::onMouseReleased(sf::Event::MouseButtonEvent mouseButtonEvent)
 
 void TestButton::keyPressed(sf::Keyboard::Key key)
 {
-  if(tBoxHighlighted && key == sf::Keyboard::BackSpace||key == sf::Keyboard::Delete){
+  if (tBoxHighlighted && key == sf::Keyboard::BackSpace || key == sf::Keyboard::Delete)
+  {
     textBox.setText("");
   }
 }

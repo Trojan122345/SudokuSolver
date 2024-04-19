@@ -3,7 +3,7 @@ A project created for me to better understand C++ and the SFML library.
 The goal is to create an app that can solve and possibly create new sudoku.
 
 As of now there is:
-  - A writable sudoku grid - classic sudoku finalNumber grid that reacts to mouse events and when active also specific key presses (numbers to write, backpase and delete to erase and arrows to move around the grid)
+  - A writable sudoku grid - classic sudoku finalDigit grid that reacts to mouse events and when active also specific key presses (digits to write, backpase and delete to erase and arrows to move around the grid)
   - Three buttons
       - one to start the solving algorithm
       - one to erase the grid
@@ -15,7 +15,7 @@ As of now there is:
   - Solving algorithm with basic solving methods and one advanced one
   - Solving attempts are animated
       - Final digits are shown as a big number
-      - Possible digits are shown as smaller numbers, located based on the number
+      - Possible digits are shown as smaller digits, located based on the number
     
 Next goals:
   - Adding the rest of advanced solving strategies
@@ -23,16 +23,16 @@ Next goals:
   - Optimizing and polishing code in the end
 
 Solving algorithm (planned):
-1. Mark all cells with all possible (non-conflicting) numbers
-2. Fill the cells where only one finalNumber is possible
-3. Fill all the numbers that have only one possible placement in a row/column/box
-    - Loop #2 & #3 until the puzzle is complete or no cells are filled during whole iteration
+1. Mark all cells with all possible (non-conflicting) digits
+2. Fill the cells where only one finalDigit is possible
+3. Fill all the digits that have only one possible placement in a row/column/box
+    - Loop #2 & #3 until the puzzle is complete or no cells are solved during whole iteration
 4. If not full yet, do the advanced strategies
-    - Loop #2, #3 & #4 until complete or no cells are filled during whole iteration
-5. Guess a finalNumber and proceed to loop #2, #3 and #4 - if finalNumber is proven wrong, unmark the finalNumber and continue
+    - Loop #2, #3 & #4 until complete or no cells are solved during whole iteration
+5. Guess a finalDigit and proceed to loop #2, #3 and #4 - if finalDigit is proven wrong, unmark the finalDigit and continue
 6. Puzzle should be complete now
 
-Note: with each finalNumber filled the now conflicting marks should be deleted
+Note: with each finalDigit solved the now conflicting marks should be deleted
 
 Advanced strategies:
 1. If number is only marked in a single row/column in a box, we can unmark the number from the rest of said row/column

@@ -25,7 +25,7 @@ TextBox::~TextBox()
 
 }
 
-void TextBox::render(sf::RenderTarget *target)
+void TextBox::render(sf::RenderTarget* target)
 {
   target->draw(box);
   target->draw(text);
@@ -70,13 +70,13 @@ void TextBox::initBox()
 void TextBox::setText(std::string txt)
 {
   this->text.setString(txt);
-  setTextPosition(text, position.x + size.x / 2, position.y-5 + size.y / 2);
+  setTextPosition(text, position.x + size.x / 2, position.y - 5 + size.y / 2);
 }
 
 void TextBox::setString(sf::String str)
 {
   this->text.setString(str);
-  setTextPosition(text, position.x + size.x / 2, position.y-5 + size.y / 2);
+  setTextPosition(text, position.x + size.x / 2, position.y - 5 + size.y / 2);
 }
 
 void TextBox::setPosition(float posX, float posY)
@@ -129,7 +129,8 @@ void TextBox::setMark(int digit, bool isSet)
 
 void TextBox::deleteMarks()
 {
-  for(auto &m : marks){
+  for (auto &m: marks)
+  {
     m = false;
   }
 }

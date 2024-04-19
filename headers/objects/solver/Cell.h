@@ -12,20 +12,20 @@
 class Cell
 {
 private:
-    //If filled, this is the number
-    //If not, finalNumber = 0
-    int finalNumber;
+    //If solved, this is the digit
+    //If not, finalDigit = 0
+    int finalDigit;
 
     //# of marks
-    int markedNumbers;
+    int numberOfMarks;
 
-    //If cell is not filled, marks show all possible numbers
+    //If cell is not solved, marks show all possible digits
     bool marks[9];
 
-    bool filled;
-    TextBox *textBox;
+    bool solved;
+    TextBox* textBox;
 
-    bool init;
+    bool sleeping;
 public:
     Cell();
     ~Cell();
@@ -33,25 +33,31 @@ public:
     [[nodiscard]] int getFinalNumber() const;
     void addTextBox(TextBox* cell);
 
-    //Fills the final number
-    void fill(int number);
-    void fill(TextBox *cell);
-    void fill();
-    [[nodiscard]] bool isFilled() const;
+    //Fills the final digit
+    void solve(int number);
+    void fillFromTextBox();
+    [[nodiscard]] bool isSolved() const;
 
-    //Mark possible finalNumber
-    void mark(int number);
-    bool removeMark(int number);
-    bool checkMarkedNumber(int number);
+    //Mark (possible digit in the cell) manipulation
+    void insertMark(int digit);
+    bool removeMark(int digit);
+    bool checkMarkedNumber(int digit);
 
-    //Checks if cell has only one marked finalNumber
-    //if so, fills the finalNumber and returns it
-    //else returns 0
-    int checkLoneNumber();
+    //Compares marks of each cell
+    //Returns number of different Marks
+    bool* orMarks(Cell* cellToOr, int &ors);
+    bool* orMarks(const bool marks[], int &ors);
+    bool fixLimitedMarks(const bool limitedMarks[9]);
 
-    std::string marksToString();
+    //Checks if cell has only one marked digit
+    //if so, fills the finalDigit and returns it
+    //else returns -1
+    int checkLoneMark();
 
     void empty();
+    [[nodiscard]] int getNumberOfMarks() const;
+
+    static void sleep();
 };
 
 

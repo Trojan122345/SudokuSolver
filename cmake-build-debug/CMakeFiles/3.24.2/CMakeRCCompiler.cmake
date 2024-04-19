@@ -1,4 +1,4 @@
-set(CMAKE_RC_COMPILER "C:/Users/Troja/Documents/_MyDocuments/Programming/minGW 7.3.0/mingw64/bin/windres.exe")
+set(CMAKE_RC_COMPILER "C:/Users/Troja/Documents/_MyDocuments/Programming/MinGW 11.0 win32/mingw64/bin/windres.exe")
 set(CMAKE_RC_COMPILER_ARG1 "")
 set(CMAKE_RC_COMPILER_LOADED 1)
 set(CMAKE_RC_SOURCE_FILE_EXTENSIONS rc;RC)

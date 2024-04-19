@@ -8,14 +8,14 @@
 
 Cell::Cell() : marks{}, textBox(nullptr)
 {
-  finalNumber = -1;
-  filled = false;
+  finalDigit = -1;
+  solved = false;
   for (bool &mark: marks)
   {
     mark = false;
   }
-  markedNumbers = 0;
-  init = false;
+  numberOfMarks = 0;
+  sleeping = false;
 }
 
 Cell::~Cell()
@@ -23,112 +23,171 @@ Cell::~Cell()
   textBox = nullptr;
 }
 
-void Cell::addTextBox(TextBox *cell)
+void Cell::addTextBox(TextBox* cell)
 {
   this->textBox = cell;
 }
 
-void Cell::fill(int number)
+void Cell::solve(int number)
 {
   using namespace std::chrono_literals;
   if (number >= 0)
   {
-    this->finalNumber = number;
-    filled = true;
+    this->finalDigit = number;
+    solved = true;
     for (int i = 0; i < 9; i++)
     {
       removeMark(i);
     }
     if (textBox != nullptr)
     {
-      textBox->setText(std::to_string(finalNumber + 1));
-      if (init)
-        std::this_thread::sleep_for(20ms);
+      textBox->setText(std::to_string(finalDigit + 1));
+      if (sleeping)
+        sleep();
     }
   }
   else
   {
-    finalNumber = -1;
-    filled = false;
+    finalDigit = -1;
+    solved = false;
     for (int i = 0; i < 9; i++)
     {
-      mark(i);
+      insertMark(i);
     }
   }
 }
 
-void Cell::fill(TextBox *cell)
-{
-  this->textBox = cell;
-  int number = textBox->getNumberFromText() - 1;
-  fill(number);
-}
-
-void Cell::fill()
+void Cell::fillFromTextBox()
 {
   if (this->textBox != nullptr)
   {
     int number = textBox->getNumberFromText() - 1;
-    fill(number);
+    solve(number);
     if (number != -1)
       textBox->setBackgroundColor(sf::Color(100, 220, 255, 50));
-    init = true;
+    sleeping = true;
   }
 }
 
 int Cell::getFinalNumber() const
 {
-  return finalNumber;
+  return finalDigit;
 }
 
-bool Cell::isFilled() const
+bool Cell::isSolved() const
 {
-  return filled;
+  return solved;
 }
 
-void Cell::mark(int number)
+void Cell::insertMark(int digit)
 {
   using namespace std::chrono_literals;
-  if (!marks[number])
+  if (!marks[digit])
   {
-    marks[number] = true;
-    textBox->setMark(number, true);
-    markedNumbers++;
+    marks[digit] = true;
+    if (textBox != nullptr)
+      textBox->setMark(digit, true);
+    numberOfMarks++;
   }
-  if (init)
-    std::this_thread::sleep_for(2ms);
+  if (sleeping)
+    sleep();
 }
 
-bool Cell::removeMark(int number)
+bool Cell::removeMark(int digit)
 {
   bool ret = false;
   using namespace std::chrono_literals;
-  if (marks[number])
+  if (marks[digit])
   {
     ret = true;
-    marks[number] = false;
-    textBox->setMark(number, false);
-    markedNumbers--;
+    marks[digit] = false;
+    if (textBox != nullptr)
+      textBox->setMark(digit, false);
+    numberOfMarks--;
   }
-  if (init)
-    std::this_thread::sleep_for(2ms);
+  if (sleeping)
+    sleep();
   return ret;
 }
 
-bool Cell::checkMarkedNumber(int number)
+bool Cell::checkMarkedNumber(int digit)
 {
-  return marks[number];
+  return marks[digit];
 }
 
-int Cell::checkLoneNumber()
+bool* Cell::orMarks(Cell* cellToOr, int &ors)
 {
-  if (markedNumbers == 1)
+  if(cellToOr->isSolved()){
+    bool* ret = new bool[9];
+    ors = 9;
+    for (int i = 0; i < 9; i++)
+    {
+      ret[i] = true;
+    }
+    return ret;
+  }
+  return orMarks(cellToOr->marks, ors);
+}
+
+bool* Cell::orMarks(const bool orMarks[9], int &ors)
+{
+  bool* ret = new bool[9];
+  if(this->isSolved()){
+    ors = 9;
+    for (int i = 0; i < 9; i++)
+    {
+      ret[i] = true;
+    }
+    return ret;
+  }
+  ors = 0;
+  for (int i = 0; i < 9; i++)
+  {
+    ret[i] = marks[i] || orMarks[i];
+    if (ret[i])
+      ors++;
+  }
+  return ret;
+}
+
+bool Cell::fixLimitedMarks(const bool limitedMarks[9])
+{
+  if (solved)
+    return false;
+  bool different = false;
+  bool ret = false;
+  for (int i = 0; i < 9; i++)
+  {
+    if (!limitedMarks[i] && marks[i])
+    {
+      different = true;
+      break;
+    }
+  }
+  for (int i = 0; i < 9; i++)
+  {
+    if (different && limitedMarks[i])
+    {
+      ret |= removeMark(i);
+    }
+  }
+  return ret;
+}
+
+int Cell::getNumberOfMarks() const
+{
+  return numberOfMarks;
+}
+
+int Cell::checkLoneMark()
+{
+  if (numberOfMarks == 1)
   {
     for (int i = 0; i < 9; i++)
     {
       if (marks[i])
       {
-        fill(i);
+        solve(i);
         return i;
       }
     }
@@ -139,24 +198,17 @@ int Cell::checkLoneNumber()
 
 void Cell::empty()
 {
-  finalNumber = -1;
-  filled = false;
+  sleeping = false;
+  finalDigit = -1;
+  solved = false;
   for (int i = 0; i < 9; i++)
   {
     removeMark(i);
   }
-  init = false;
 }
 
-std::string Cell::marksToString()
+void Cell::sleep()
 {
-  std::string ret = "";
-
-  for (int i = 0; i < 9; i++)
-  {
-    if (marks[i])
-      ret += std::to_string(i) + " ";
-  }
-
-  return ret + "\n";
+  using namespace std::chrono_literals;
+  std::this_thread::sleep_for(1ms);
 }

@@ -80,10 +80,10 @@ find_path(SFML_INCLUDE_DIR SFML/Config.hpp
         PATH_SUFFIXES include
         PATHS ${FIND_SFML_PATHS})
 
-# check the version finalNumber
+# check the version finalDigit
 set(SFML_VERSION_OK TRUE)
 if(SFML_FIND_VERSION AND SFML_INCLUDE_DIR)
-    # extract the major and minor version numbers from SFML/Config.hpp
+    # extract the major and minor version digits from SFML/Config.hpp
     # we have to handle framework a little bit differently:
     if("${SFML_INCLUDE_DIR}" MATCHES "SFML.framework")
         set(SFML_CONFIG_HPP_INPUT "${SFML_INCLUDE_DIR}/Headers/Config.hpp")
@@ -99,9 +99,9 @@ if(SFML_FIND_VERSION AND SFML_INCLUDE_DIR)
     endif()
     math(EXPR SFML_REQUESTED_VERSION "${SFML_FIND_VERSION_MAJOR} * 10000 + ${SFML_FIND_VERSION_MINOR} * 100 + ${SFML_FIND_VERSION_PATCH}")
 
-    # if we could extract them, compare with the requested version finalNumber
+    # if we could extract them, compare with the requested version finalDigit
     if (SFML_VERSION_MAJOR)
-        # transform version numbers to an integer
+        # transform version digits to an integer
         math(EXPR SFML_VERSION "${SFML_VERSION_MAJOR} * 10000 + ${SFML_VERSION_MINOR} * 100 + ${SFML_VERSION_PATCH}")
 
         # compare them
@@ -211,7 +211,7 @@ foreach(FIND_SFML_COMPONENT ${SFML_FIND_COMPONENTS})
         set(FIND_SFML_MISSING "${FIND_SFML_MISSING} SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY")
     endif()
 
-    # mark as advanced
+    # insertMark as advanced
     MARK_AS_ADVANCED(SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY
             SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_RELEASE
             SFML_${FIND_SFML_COMPONENT_UPPER}_LIBRARY_DEBUG

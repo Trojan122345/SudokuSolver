@@ -21,11 +21,11 @@ class Core
 private:
     //SFML graphics
     sf::VideoMode videoMode;
-    sf::RenderWindow *window;
+    sf::RenderWindow* window;
     sf::Event sfmlEvent;
 
     //My objects
-    std::vector<Object *> objects;
+    std::vector<Object*> objects;
 
     //Init methods
     void initWindow();

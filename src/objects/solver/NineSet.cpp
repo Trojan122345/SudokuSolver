@@ -5,11 +5,11 @@
 #include <iostream>
 #include "objects/solver/NineSet.h"
 
-NineSet::NineSet() : numbers{}
+NineSet::NineSet() : digits{}
 {
-  finished = false;
-  filledNumbers = 0;
-  for (auto &number: numbers)
+  solved = false;
+  solvedDigits = 0;
+  for (auto &number: digits)
     number = false;
 }
 
@@ -29,27 +29,39 @@ void NineSet::removeMark(int number)
   }
 }
 
-void NineSet::addCell(Cell *c)
+void NineSet::addCell(Cell* c)
 {
   cells.push_back(c);
 }
 
+void NineSet::solveCell(int cellNumber, int digit)
+{
+  this->cells[cellNumber]->solve(digit);
+  if (digit >= 0)
+    digits[digit] = true;
+  solvedDigits++;
+  if (solvedDigits == 9)
+    solved = true;
+}
+
+//Check the last missing digit of a set
+//If the set has 8 digits solved, this method finds the last missing digit and writes it into the last empty cell
 bool NineSet::checkLastNumber()
 {
-  if (filledNumbers == 8)
+  if (solvedDigits == 8)
   {
     //Find the missing number
-    for (int i = 0; i < 9; i++)
+    for (int digit = 0; digit < 9; digit++)
     {
-      if (!numbers[i])
+      if (!digits[digit])
       {
         //Find the empty cell
-        for (auto &cell: cells)
+        for (int cellIndex = 0; cellIndex < 9; cellIndex++)
         {
-          if (!cell->isFilled())
+          if (!cells[cellIndex]->isSolved())
           {
-            //Fill the empty cell with the missing number
-            cell->fill(i);
+            //Solve the empty cell with the missing number
+            solveCell(cellIndex, digit);
             return true;
           }
         }
@@ -59,55 +71,50 @@ bool NineSet::checkLastNumber()
   return false;
 }
 
+//Check for digits that have only one possible position (insertMark) in a set
+//If there's such a digit, method will write it into the corresponding cell
+//If there's 8 solved digits, method will call the NineSet::checkLastNumber()
 bool NineSet::checkOnlyMark()
 {
-  bool filled = false;
-  bool repeat;
+  bool updated = false;
 
-  if (filledNumbers < 8)
+  if (solvedDigits < 8)
   {
-    do
+    for (int digit = 0; digit < 9; digit++)
     {
-      //repeat each time a number is filled - new possible single mark can be created
-      repeat = false;
-      for (int i = 0; i < 9; i++)
+      //Find unsolved digits
+      if (!digits[digit])
       {
-        //Find unfilled numbers
-        if (!numbers[i])
+        int numberOfMarks = 0;
+        int tempCellIndex = -1;
+        for (int cellIndex = 0; cellIndex < 9; cellIndex++)
         {
-          int numberOfMarks = 0;
-          Cell *tempCell;
-          for (auto &cell: cells)
+          //Count cells in which number is marked
+          if (!cells[cellIndex]->isSolved() && cells[cellIndex]->checkMarkedNumber(digit))
           {
-            //Count cells in which number is marked
-            if (!cell->isFilled() && cell->checkMarkedNumber(i))
-            {
-              numberOfMarks++;
-              tempCell = cell;
-            }
-          }
-          //Check for single mark, if true, fills number
-          if (numberOfMarks == 1)
-          {
-            tempCell->fill(i);
-            filled = true;
-            repeat = true;
-            tempCell = nullptr;
+            numberOfMarks++;
+            tempCellIndex = cellIndex;
           }
         }
+        //Check for single insertMark, if true, solves number
+        if (numberOfMarks == 1)
+        {
+          solveCell(tempCellIndex, digit);
+          updated = true;
+        }
       }
-    } while (repeat);
+    }
   }
-  else if (filledNumbers == 8)
+  else if (solvedDigits == 8)
   {
     return checkLastNumber();
   }
-  else if (filledNumbers == 9)
+  else if (solvedDigits == 9)
   {
     return false;
   }
 
-  return filled;
+  return updated;
 }
 
 bool NineSet::checkSingleRowCol(int &boxRowReturn, int &boxColReturn, int digit)
@@ -115,19 +122,19 @@ bool NineSet::checkSingleRowCol(int &boxRowReturn, int &boxColReturn, int digit)
   int rowCount = 0, colCount = 0;
   boxRowReturn = -1;
   boxColReturn = -1;
-  for (int i = 0; i < 9; i++)
+  for (int cellsIndex = 0; cellsIndex < 9; cellsIndex++)
   {
-    if (cells[i]->checkMarkedNumber(digit))
+    if (cells[cellsIndex]->checkMarkedNumber(digit))
     {
-      if (boxRowReturn != i / 3)
+      if (boxRowReturn != cellsIndex / 3)
       {
         rowCount++;
-        boxRowReturn = i / 3;
+        boxRowReturn = cellsIndex / 3;
       }
-      if (boxColReturn != i % 3)
+      if (boxColReturn != cellsIndex % 3)
       {
         colCount++;
-        boxColReturn = i % 3;
+        boxColReturn = cellsIndex % 3;
       }
     }
   }
@@ -144,14 +151,102 @@ bool NineSet::checkSingleRowCol(int &boxRowReturn, int &boxColReturn, int digit)
   return false;
 }
 
+bool NineSet::checkLimitedMarks()
+{
+  if (solved)
+    return false;
+  return limitedMarksRecursion(9 - solvedDigits);
+}
+
+bool NineSet::limitedMarksRecursion(int finalDepth)
+{
+  bool ret = false;
+  for (int cell = 0; cell < 9; ++cell)
+  {
+    bool boolArray[9];
+    if (!cells[cell]->isSolved())
+    {
+      for (int digit = 0; digit < 9; ++digit)
+      {
+        boolArray[digit] = cells[cell]->checkMarkedNumber(digit);
+      }
+      ret |= limitedMarksRecursion(finalDepth, 2, cell + 1, boolArray);
+    }
+  }
+
+  return ret;
+}
+
+bool NineSet::limitedMarksRecursion(int finalDepth, int currentDepth, int startCell, bool boolArray[9])
+{
+  if (finalDepth < currentDepth)
+  {
+    return false;
+  }
+  bool ret = false;
+
+  bool orResults[9][9];
+
+  int totalMarks[9];
+  for (int comparedCell = startCell; comparedCell < 9; comparedCell++)
+  {
+    if (cells[comparedCell]->isSolved())
+    {
+      continue;
+    }
+    bool* tempResult = cells[comparedCell]->orMarks(boolArray, totalMarks[comparedCell]);
+    for (int i = 0; i < 9; i++)
+      orResults[comparedCell][i] = tempResult[i];
+  }
+  for (int comparedCell = startCell; comparedCell < 9; comparedCell++)
+  {
+    if (cells[comparedCell]->isSolved())
+    {
+      continue;
+    }
+    if (totalMarks[comparedCell] == currentDepth)
+    {
+      for (auto &cell: cells)
+        ret |= cell->fixLimitedMarks(orResults[comparedCell]);
+
+    }
+    else
+      ret |= limitedMarksRecursion(finalDepth, currentDepth + 1, comparedCell + 1, orResults[comparedCell]);
+  }
+
+  return ret;
+}
+
+bool NineSet::checkForConflicts()
+{
+  bool tempDigits[9];
+  for (bool & tempDigit : tempDigits)
+  {
+    tempDigit = false;
+  }
+  for (int i = 0; i < 9; i++)
+  {
+    if (cells[i]->isSolved())
+    {
+      if (!tempDigits[cells[i]->getFinalNumber()])
+        tempDigits[cells[i]->getFinalNumber()] = true;
+      else
+        return true;
+    }
+  }
+  return false;
+}
+
 void NineSet::updateChanges()
 {
   for (auto &cell: cells)
   {
-    if (cell->isFilled() && !numbers[cell->getFinalNumber()])
+    if (cell->isSolved() && !digits[cell->getFinalNumber()])
     {
-      numbers[cell->getFinalNumber()] = true;
-      filledNumbers++;
+      digits[cell->getFinalNumber()] = true;
+      solvedDigits++;
+      if (solvedDigits == 9)
+        solved = true;
       removeMark(cell->getFinalNumber());
     }
   }
@@ -159,33 +254,15 @@ void NineSet::updateChanges()
 
 void NineSet::reset()
 {
-  finished = false;
-  filledNumbers = 0;
-  for (auto &number: numbers)
+  solved = false;
+  solvedDigits = 0;
+  for (auto &number: digits)
     number = false;
 }
 
-bool NineSet::isFinished() const
+bool NineSet::isSolved() const
 {
-  return finished;
-}
-
-std::string NineSet::toString()
-{
-  std::string ret = "Set numbers:\n";
-  for (int i = 0; i < 9; i++)
-  {
-    if (numbers[i])
-      ret += std::to_string(i) + " ";
-  }
-
-  ret += "\n\n";
-  for (int i = 0; i < 9; i++)
-  {
-    ret += "Cell " + std::to_string(i) + ": " + cells[i]->marksToString();
-  }
-
-  return ret + "\n";
+  return solved;
 }
 
 
