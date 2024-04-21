@@ -17,14 +17,20 @@ private:
     static int NextID;
     int ID;
     int getNextID();
+
+    bool didLock;
 protected:
     bool mouseIn, mouseDown;
+    bool* locked;
+
+    virtual void onLock() = 0;
+    virtual void onUnLock() = 0;
 public:
     Object();
     virtual ~Object();
 
     virtual void render(sf::RenderTarget *target)= 0;
-    virtual void update() = 0;
+    virtual void update();
 
     virtual bool isInBoundaries(float posX, float posY) = 0;
 
@@ -34,6 +40,8 @@ public:
     virtual void onMouseReleased(sf::Event::MouseButtonEvent mouseButtonEvent){};
     virtual void textEntered(const sf::String &str){};
     virtual void keyPressed(sf::Keyboard::Key){};
+
+    virtual void setLock(bool *lock);
 
     [[nodiscard]] int getID() const;
     bool compare(Object* object) const;

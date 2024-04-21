@@ -3,24 +3,44 @@ project(SudokuSolver)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(SudokuSolver src/main.cpp src/Core.cpp headers/Core.h src/objects/Object.cpp headers/objects/Object.h src/objects/numberGrid/NumberGrid.cpp headers/objects/numberGrid/NumberGrid.h src/objects/numberGrid/TextBox.cpp headers/objects/numberGrid/TextBox.h src/objects/numberGrid/Button.cpp headers/objects/numberGrid/Button.h src/objects/solver/Solver.cpp headers/objects/solver/Solver.h src/objects/solver/Cell.cpp headers/objects/solver/Cell.h src/objects/solver/NineSet.cpp headers/objects/solver/NineSet.h)
 
-add_executable(Tests Test/NineSetTests.cpp src/objects/Object.cpp headers/objects/Object.h src/objects/numberGrid/NumberGrid.cpp headers/objects/numberGrid/NumberGrid.h src/objects/numberGrid/TextBox.cpp headers/objects/numberGrid/TextBox.h src/objects/numberGrid/Button.cpp headers/objects/numberGrid/Button.h src/objects/solver/Solver.cpp headers/objects/solver/Solver.h src/objects/solver/Cell.cpp headers/objects/solver/Cell.h src/objects/solver/NineSet.cpp headers/objects/solver/NineSet.h Test/CellTests.cpp)
 
-include_directories(headers "C:/SFML")
+add_executable(SudokuSolver src/objects/SolverGUI.cpp headers/objects/SolverGUI.h)
+add_executable(Tests)
 
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
-find_package(SFML COMPONENTS system window graphics REQUIRED)
-if(SFML_FOUND)
-    include_directories(${SFML_INCLUDE_DIR})
-    target_link_libraries(SudokuSolver ${SFML_LIBRARIES})
-    target_link_libraries(Tests ${SFML_LIBRARIES})
-endif()
+include_directories(
+        headers
+        headers/objects
+        headers/solver
+        headers/util
+        headers/objects/numberGrid)
+
+add_subdirectory(src)
+add_subdirectory(headers)
+
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+
+include(FetchContent)
+FetchContent_Declare(SFML
+        GIT_REPOSITORY https://github.com/SFML/SFML.git
+        GIT_TAG 2.6.x)
+FetchContent_MakeAvailable(SFML)
+
+target_link_libraries(SudokuSolver PRIVATE sfml-graphics)
+target_link_libraries(SudokuSolver PRIVATE sfml-window)
+target_link_libraries(SudokuSolver PRIVATE sfml-system)
 
 if(WIN32)
-    file(GLOB BINARY_DEP_DLLS "${SFML_INCLUDE_DIR}/../bin/*.dll")
-    file(COPY ${BINARY_DEP_DLLS} DESTINATION ${CMAKE_BINARY_DIR})
+    add_custom_command(
+            TARGET SudokuSolver
+            COMMENT "Copy OpenAL DLL"
+            PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll $<TARGET_FILE_DIR:SudokuSolver>
+            VERBATIM)
 endif()
+
+install(TARGETS SudokuSolver)
 
 include(FetchContent)
 FetchContent_Declare(

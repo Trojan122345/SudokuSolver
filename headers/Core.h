@@ -11,10 +11,10 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
-#include "objects/Object.h"
-#include "objects/numberGrid/NumberGrid.h"
-#include "objects/numberGrid/TextBox.h"
-#include "objects/numberGrid/Button.h"
+#include "Object.h"
+#include "NumberGrid.h"
+#include "TextBox.h"
+#include "GridButtons.h"
 
 class Core
 {

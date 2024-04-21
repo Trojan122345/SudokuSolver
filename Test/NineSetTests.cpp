@@ -15,7 +15,7 @@ protected:
     {
       for (int i = 0; i < 9; i++)
       {
-        cells[i].empty();
+        cells[i].empty(false);
         set.addCell(&cells[i]);
         set.reset();
       }
@@ -145,20 +145,20 @@ TEST_F(NineSetTests, limitedMarksDepth2)
   {
     if (i < 2)
     {
-      EXPECT_TRUE(cells[3].checkMarkedNumber(cell34marks[i]));
-      EXPECT_TRUE(cells[4].checkMarkedNumber(cell34marks[i]));
-      EXPECT_TRUE(cells[5].checkMarkedNumber(cell5marks[i]));
-      EXPECT_TRUE(cells[6].checkMarkedNumber(cell6marks[i]));
-      EXPECT_TRUE(cells[7].checkMarkedNumber(cell7marks[i]));
-      EXPECT_TRUE(cells[8].checkMarkedNumber(cell8marks[i]));
+      EXPECT_TRUE(cells[3].isDigitMarked(cell34marks[i]));
+      EXPECT_TRUE(cells[4].isDigitMarked(cell34marks[i]));
+      EXPECT_TRUE(cells[5].isDigitMarked(cell5marks[i]));
+      EXPECT_TRUE(cells[6].isDigitMarked(cell6marks[i]));
+      EXPECT_TRUE(cells[7].isDigitMarked(cell7marks[i]));
+      EXPECT_TRUE(cells[8].isDigitMarked(cell8marks[i]));
 
-      EXPECT_FALSE(cells[5].checkMarkedNumber(cell34marks[i]));
-      EXPECT_FALSE(cells[6].checkMarkedNumber(cell34marks[i]));
-      EXPECT_FALSE(cells[7].checkMarkedNumber(cell34marks[i]));
-      EXPECT_FALSE(cells[8].checkMarkedNumber(cell34marks[i]));
+      EXPECT_FALSE(cells[5].isDigitMarked(cell34marks[i]));
+      EXPECT_FALSE(cells[6].isDigitMarked(cell34marks[i]));
+      EXPECT_FALSE(cells[7].isDigitMarked(cell34marks[i]));
+      EXPECT_FALSE(cells[8].isDigitMarked(cell34marks[i]));
     }
     else
-      ASSERT_TRUE(cells[8].checkMarkedNumber(cell8marks[i]));
+      ASSERT_TRUE(cells[8].isDigitMarked(cell8marks[i]));
   }
 }
 
@@ -196,18 +196,18 @@ TEST_F(NineSetTests, limitedMarksDepth3)
   for (int i = 0; i < 3; i++)
   {
     if (i != 2)
-      EXPECT_TRUE(cells[3].checkMarkedNumber(cell345marks[i]));
+      EXPECT_TRUE(cells[3].isDigitMarked(cell345marks[i]));
     if (i != 1)
-      EXPECT_TRUE(cells[4].checkMarkedNumber(cell345marks[i]));
+      EXPECT_TRUE(cells[4].isDigitMarked(cell345marks[i]));
     if (i != 0)
-      EXPECT_TRUE(cells[5].checkMarkedNumber(cell345marks[i]));
-    EXPECT_TRUE(cells[6].checkMarkedNumber(cell678marks[i]));
-    EXPECT_TRUE(cells[7].checkMarkedNumber(cell678marks[i]));
-    EXPECT_TRUE(cells[8].checkMarkedNumber(cell678marks[i]));
+      EXPECT_TRUE(cells[5].isDigitMarked(cell345marks[i]));
+    EXPECT_TRUE(cells[6].isDigitMarked(cell678marks[i]));
+    EXPECT_TRUE(cells[7].isDigitMarked(cell678marks[i]));
+    EXPECT_TRUE(cells[8].isDigitMarked(cell678marks[i]));
 
-    EXPECT_FALSE(cells[6].checkMarkedNumber(cell345marks[i]));
-    EXPECT_FALSE(cells[7].checkMarkedNumber(cell345marks[i]));
-    EXPECT_FALSE(cells[8].checkMarkedNumber(cell345marks[i]));
+    EXPECT_FALSE(cells[6].isDigitMarked(cell345marks[i]));
+    EXPECT_FALSE(cells[7].isDigitMarked(cell345marks[i]));
+    EXPECT_FALSE(cells[8].isDigitMarked(cell345marks[i]));
   }
 }
 
@@ -249,30 +249,30 @@ TEST_F(NineSetTests, limitedMarksDouble)
 
   for (int i = 0; i < 2; i++)
   {
-    EXPECT_TRUE(cells[0].checkMarkedNumber(i));
-    EXPECT_TRUE(cells[1].checkMarkedNumber(i));
+    EXPECT_TRUE(cells[0].isDigitMarked(i));
+    EXPECT_TRUE(cells[1].isDigitMarked(i));
   }
   for (int i = 6; i < 9; i++)
   {
-    EXPECT_TRUE(cells[6].checkMarkedNumber(i));
-    EXPECT_TRUE(cells[7].checkMarkedNumber(i));
-    EXPECT_TRUE(cells[8].checkMarkedNumber(i));
+    EXPECT_TRUE(cells[6].isDigitMarked(i));
+    EXPECT_TRUE(cells[7].isDigitMarked(i));
+    EXPECT_TRUE(cells[8].isDigitMarked(i));
   }
   for (int i = 0; i < 6; i++)
   {
-    EXPECT_FALSE(cells[6].checkMarkedNumber(i));
-    EXPECT_FALSE(cells[7].checkMarkedNumber(i));
-    EXPECT_FALSE(cells[8].checkMarkedNumber(i));
+    EXPECT_FALSE(cells[6].isDigitMarked(i));
+    EXPECT_FALSE(cells[7].isDigitMarked(i));
+    EXPECT_FALSE(cells[8].isDigitMarked(i));
   }
 
-  EXPECT_TRUE(cells[2].checkMarkedNumber(2));
-  EXPECT_TRUE(cells[2].checkMarkedNumber(3));
-  EXPECT_TRUE(cells[3].checkMarkedNumber(3));
-  EXPECT_TRUE(cells[3].checkMarkedNumber(4));
-  EXPECT_TRUE(cells[4].checkMarkedNumber(4));
-  EXPECT_TRUE(cells[4].checkMarkedNumber(5));
-  EXPECT_TRUE(cells[5].checkMarkedNumber(5));
-  EXPECT_TRUE(cells[5].checkMarkedNumber(2));
+  EXPECT_TRUE(cells[2].isDigitMarked(2));
+  EXPECT_TRUE(cells[2].isDigitMarked(3));
+  EXPECT_TRUE(cells[3].isDigitMarked(3));
+  EXPECT_TRUE(cells[3].isDigitMarked(4));
+  EXPECT_TRUE(cells[4].isDigitMarked(4));
+  EXPECT_TRUE(cells[4].isDigitMarked(5));
+  EXPECT_TRUE(cells[5].isDigitMarked(5));
+  EXPECT_TRUE(cells[5].isDigitMarked(2));
 }
 
 
@@ -307,23 +307,23 @@ TEST_F(NineSetTests, limitedCells2depth)
 
   for (int i = 3; i < 5; i++)
   {
-    EXPECT_TRUE(cells[3].checkMarkedNumber(i));
-    EXPECT_TRUE(cells[4].checkMarkedNumber(i));
+    EXPECT_TRUE(cells[3].isDigitMarked(i));
+    EXPECT_TRUE(cells[4].isDigitMarked(i));
   }
 
-  EXPECT_TRUE(cells[5].checkMarkedNumber(5));
-  EXPECT_TRUE(cells[5].checkMarkedNumber(6));
-  EXPECT_TRUE(cells[6].checkMarkedNumber(6));
-  EXPECT_TRUE(cells[6].checkMarkedNumber(7));
-  EXPECT_TRUE(cells[7].checkMarkedNumber(7));
-  EXPECT_TRUE(cells[7].checkMarkedNumber(8));
-  EXPECT_TRUE(cells[8].checkMarkedNumber(5));
-  EXPECT_TRUE(cells[8].checkMarkedNumber(6));
-  EXPECT_TRUE(cells[8].checkMarkedNumber(7));
-  EXPECT_TRUE(cells[8].checkMarkedNumber(8));
+  EXPECT_TRUE(cells[5].isDigitMarked(5));
+  EXPECT_TRUE(cells[5].isDigitMarked(6));
+  EXPECT_TRUE(cells[6].isDigitMarked(6));
+  EXPECT_TRUE(cells[6].isDigitMarked(7));
+  EXPECT_TRUE(cells[7].isDigitMarked(7));
+  EXPECT_TRUE(cells[7].isDigitMarked(8));
+  EXPECT_TRUE(cells[8].isDigitMarked(5));
+  EXPECT_TRUE(cells[8].isDigitMarked(6));
+  EXPECT_TRUE(cells[8].isDigitMarked(7));
+  EXPECT_TRUE(cells[8].isDigitMarked(8));
 
-  EXPECT_FALSE(cells[3].checkMarkedNumber(5));
-  EXPECT_FALSE(cells[3].checkMarkedNumber(7));
-  EXPECT_FALSE(cells[4].checkMarkedNumber(6));
-  EXPECT_FALSE(cells[4].checkMarkedNumber(8));
+  EXPECT_FALSE(cells[3].isDigitMarked(5));
+  EXPECT_FALSE(cells[3].isDigitMarked(7));
+  EXPECT_FALSE(cells[4].isDigitMarked(6));
+  EXPECT_FALSE(cells[4].isDigitMarked(8));
 }

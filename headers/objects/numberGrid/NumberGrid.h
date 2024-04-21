@@ -6,8 +6,9 @@
 #define SUDOKUSOLVER_NUMBERGRID_H
 
 
-#include "objects/Object.h"
-#include "TextBox.h"
+#include "Object.h"
+#include "GridTextBox.h"
+#include "Solver.h"
 
 class NumberGrid : public Object
 {
@@ -15,7 +16,7 @@ private:
     //Graphic objects
     sf::RectangleShape gridBorder;
     sf::Vector2f position;
-    std::vector<std::vector<TextBox*>> cells;
+    std::vector<std::vector<GridTextBox*>> cells;
 
     //initializers
     void initBorder(float posX, float posY);
@@ -28,6 +29,9 @@ private:
     //Key methods
     void textErased();
     void movePressed(sf::Keyboard::Key keyPressed);
+protected:
+    void onLock() override;
+    void onUnLock() override;
 public:
     explicit NumberGrid(float posX, float posY);
     ~NumberGrid() override;
@@ -49,7 +53,7 @@ public:
     //Get finalDigit matrix for the solver
     int** getNumbers();
 
-    std::vector<std::vector<TextBox*>> getCells()
+    std::vector<std::vector<GridTextBox*>> getCells()
     { return cells; }
 
     void deleteAllText();

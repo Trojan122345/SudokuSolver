@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include <regex>
-#include "objects/numberGrid/NumberGrid.h"
+#include "NumberGrid.h"
 
 NumberGrid::NumberGrid(float posX, float posY) : cells(9)
 {
@@ -44,14 +44,14 @@ void NumberGrid::initGrid()
   float posX, posY;
   for (int i = 0; i < 9; i++)
   {
-    this->cells[i] = std::vector<TextBox*>(9);
+    this->cells[i] = std::vector<GridTextBox*>(9);
     for (int ii = 0; ii < 9; ii++)
     {
       posX = this->position.x + 31.0f * (float) ii + (float) (ii / 3);
 
       posY = this->position.y + 31.0f * (float) i + (float) (i / 3);
 
-      this->cells[i][ii] = new TextBox();
+      this->cells[i][ii] = new GridTextBox();
       this->cells[i][ii]->setPosition(posX, posY);
     }
   }
@@ -76,7 +76,7 @@ void NumberGrid::render(sf::RenderTarget* target)
 
 void NumberGrid::update()
 {
-
+  Object::update();
 }
 
 bool NumberGrid::isInBoundaries(float posX, float posY)
@@ -87,32 +87,38 @@ bool NumberGrid::isInBoundaries(float posX, float posY)
 
 void NumberGrid::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
 {
-  bool br = false;
-
-
-  for (auto row: cells)
+  if (locked == nullptr || !*locked)
   {
-    for (auto &box: row)
-    {
-      if (box->isInBoundaries(mouseButtonEvent.x, mouseButtonEvent.y))
-      {
-        this->highlightBox(box);
+    bool br = false;
 
-        br = true;
-        break;
+
+    for (auto row: cells)
+    {
+      for (auto &box: row)
+      {
+        if (box->isInBoundaries(mouseButtonEvent.x, mouseButtonEvent.y))
+        {
+          this->highlightBox(box);
+
+          br = true;
+          break;
+        }
       }
+      if (br)
+        break;
     }
-    if (br)
-      break;
   }
 }
 
 void NumberGrid::textEntered(const sf::String &str)
 {
-  std::string s = str.toAnsiString();
-  std::regex reg("[1-9]");
-  if (this->highlightedBox != nullptr && std::regex_match(s, reg))
-    this->highlightedBox->setString(str);
+  if (locked == nullptr || !*locked)
+  {
+    std::string s = str.toAnsiString();
+    std::regex reg("[1-9]");
+    if (this->highlightedBox != nullptr && std::regex_match(s, reg))
+      this->highlightedBox->setString(str);
+  }
 }
 
 void NumberGrid::textErased()
@@ -125,39 +131,42 @@ void NumberGrid::textErased()
 
 void NumberGrid::movePressed(sf::Keyboard::Key keyPressed)
 {
-  if (this->highlightedBox != nullptr)
+  if (locked == nullptr || !*locked)
   {
-    int boxPos = highlightedBox->getID() - this->cells[0][0]->getID();
-    switch (keyPressed)
+    if (this->highlightedBox != nullptr)
     {
-      case sf::Keyboard::Left:
-        if (boxPos % 9 == 0)
-          boxPos += 8;
-        else
-          boxPos -= 1;
-        break;
-      case sf::Keyboard::Right:
-        if (boxPos % 9 == 8)
-          boxPos -= 8;
-        else
-          boxPos += 1;
-        break;
-      case sf::Keyboard::Up:
-        if (boxPos < 9)
-          boxPos += 9 * 8;
-        else
-          boxPos -= 9;
-        break;
-      case sf::Keyboard::Down:
-        if (boxPos > 71)
-          boxPos -= 9 * 8;
-        else
-          boxPos += 9;
-        break;
-      default:
-        break;
+      int boxPos = highlightedBox->getID() - this->cells[0][0]->getID();
+      switch (keyPressed)
+      {
+        case sf::Keyboard::Left:
+          if (boxPos % 9 == 0)
+            boxPos += 8;
+          else
+            boxPos -= 1;
+          break;
+        case sf::Keyboard::Right:
+          if (boxPos % 9 == 8)
+            boxPos -= 8;
+          else
+            boxPos += 1;
+          break;
+        case sf::Keyboard::Up:
+          if (boxPos < 9)
+            boxPos += 9 * 8;
+          else
+            boxPos -= 9;
+          break;
+        case sf::Keyboard::Down:
+          if (boxPos > 71)
+            boxPos -= 9 * 8;
+          else
+            boxPos += 9;
+          break;
+        default:
+          break;
+      }
+      highlightBox(cells[boxPos / 9][boxPos % 9]);
     }
-    highlightBox(cells[boxPos / 9][boxPos % 9]);
   }
 }
 
@@ -179,11 +188,14 @@ void NumberGrid::highlightBox(TextBox* box)
 
 void NumberGrid::onMouseMove(sf::Event::MouseMoveEvent mouseMoveEvent)
 {
-  for (auto row: cells)
+  if (locked == nullptr || !*locked)
   {
-    for (auto &box: row)
+    for (auto row: cells)
     {
-      box->onMouseMove(mouseMoveEvent);
+      for (auto &cell: row)
+      {
+        cell->onMouseMove(mouseMoveEvent);
+      }
     }
   }
 }
@@ -233,9 +245,18 @@ void NumberGrid::deleteAllText()
   {
     for (int ii = 0; ii < 9; ii++)
     {
-      cells[i][ii]->setText("");
-      cells[i][ii]->deleteMarks();
-      cells[i][ii]->setBackgroundColor(sf::Color::Transparent);
+      cells[i][ii]->empty();
     }
   }
+}
+
+void NumberGrid::onLock()
+{
+  if (highlightedBox != nullptr)
+    highlightBox(highlightedBox);
+}
+
+void NumberGrid::onUnLock()
+{
+
 }

@@ -9,12 +9,12 @@ class CellTests : public ::testing::Test
 {
 protected:
     Cell cell, cell2;
-    TextBox t;
+    GridTextBox t;
 
     virtual void SetUp()
     {
-      cell.empty();
-      cell2.empty();
+      cell.empty(false);
+      cell2.empty(false);
       t.setText("");
     }
 
@@ -29,12 +29,12 @@ TEST_F(CellTests, markInsertRemove)
 {
   cell.insertMark(5);
 
-  ASSERT_TRUE(cell.checkMarkedNumber(5));
+  ASSERT_TRUE(cell.isDigitMarked(5));
   ASSERT_EQ(1, cell.getNumberOfMarks());
 
   cell.removeMark(5);
 
-  ASSERT_FALSE(cell.checkMarkedNumber(5));
+  ASSERT_FALSE(cell.isDigitMarked(5));
   ASSERT_EQ(0, cell.getNumberOfMarks());
 
   ASSERT_FALSE(cell.removeMark(2));
@@ -63,13 +63,13 @@ TEST_F(CellTests, solve)
   ASSERT_TRUE(cell.isSolved());
   ASSERT_EQ(5, cell.getFinalNumber());
 
-  cell.empty();
+  cell.empty(false);
   cell.solve(-1);
 
   ASSERT_FALSE(cell.isSolved());
   ASSERT_EQ(9, cell.getNumberOfMarks());
 
-  cell.empty();
+  cell.empty(false);
   cell.insertMark(4);
   cell.insertMark(3);
   cell.insertMark(2);
@@ -82,14 +82,14 @@ TEST_F(CellTests, fillFromTextBox)
 {
   t.setText("5");
   cell.addTextBox(&t);
-  cell.fillFromTextBox();
+  cell.fillFromTextBox(true);
 
   ASSERT_TRUE(cell.isSolved());
   ASSERT_EQ(4, cell.getFinalNumber());
 
-  cell.empty();
+  cell.empty(false);
   t.setText("");
-  cell.fillFromTextBox();
+  cell.fillFromTextBox(true);
 
   ASSERT_FALSE(cell.isSolved());
 }
@@ -100,12 +100,12 @@ TEST_F(CellTests, empty)
   cell.insertMark(4);
   cell.insertMark(6);
 
-  cell.empty();
+  cell.empty(false);
 
   ASSERT_EQ(0, cell.getNumberOfMarks());
 
   cell.solve(5);
-  cell.empty();
+  cell.empty(false);
   ASSERT_FALSE(cell.isSolved());
 }
 
@@ -202,11 +202,11 @@ TEST_F(CellTests, fixLimitedMarks)
   ASSERT_TRUE(cell.fixLimitedMarks(limitedMarks));
   ASSERT_FALSE(cell2.fixLimitedMarks(limitedMarks));
 
-  ASSERT_FALSE(cell.checkMarkedNumber(2));
-  ASSERT_FALSE(cell.checkMarkedNumber(4));
-  ASSERT_TRUE(cell.checkMarkedNumber(3));
-  ASSERT_TRUE(cell2.checkMarkedNumber(2));
-  ASSERT_TRUE(cell2.checkMarkedNumber(4));
+  ASSERT_FALSE(cell.isDigitMarked(2));
+  ASSERT_FALSE(cell.isDigitMarked(4));
+  ASSERT_TRUE(cell.isDigitMarked(3));
+  ASSERT_TRUE(cell2.isDigitMarked(2));
+  ASSERT_TRUE(cell2.isDigitMarked(4));
 
   cell.solve(5);
   ASSERT_FALSE(cell.fixLimitedMarks(limitedMarks));
