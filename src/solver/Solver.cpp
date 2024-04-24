@@ -359,8 +359,8 @@ bool Solver::checkSolvedPuzzle()
 {
   for (int i = 0; i < 9; i++)
   {
-    if (boxes[i].checkForConflicts() || cols[i].checkForConflicts() || rows[i].checkForConflicts()
-        || !boxes[i].isSolved() || !cols[i].isSolved() || !rows[i].isSolved())
+    if (!boxes[i].isSolved() || !cols[i].isSolved() || !rows[i].isSolved() ||
+        boxes[i].checkForConflicts() || cols[i].checkForConflicts() || rows[i].checkForConflicts())
       return false;
   }
   return true;

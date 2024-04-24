@@ -3,7 +3,7 @@
 //
 
 #include <gtest/gtest.h>
-#include "objects/solver/NineSet.h"
+#include "NineSet.h"
 
 class NineSetTests : public ::testing::Test
 {
@@ -15,7 +15,7 @@ protected:
     {
       for (int i = 0; i < 9; i++)
       {
-        cells[i].empty(false);
+        cells[i].empty();
         set.addCell(&cells[i]);
         set.reset();
       }
@@ -29,6 +29,87 @@ protected:
 
 };
 
+TEST_F(NineSetTests, updadeChanges)
+{
+  for (auto &cell: cells)
+  {
+    cell.solve(-1);
+  }
+
+  cells[0].solve(0);
+  cells[1].solve(1);
+  cells[2].solve(2);
+
+  set.updateChanges(true);
+
+  for (int i = 0; i < 9; i++)
+  {
+    if (i < 3)
+    {
+      EXPECT_TRUE(cells[i].isSolved());
+    }
+    else
+    {
+      for (int ii = 0; ii < 9; ii++)
+      {
+        if (ii < 3)
+          EXPECT_FALSE(cells[i].isDigitMarked(ii));
+        else
+          EXPECT_TRUE(cells[i].isDigitMarked(ii));
+      }
+    }
+  }
+}
+
+TEST_F(NineSetTests, solveRemove)
+{
+  for (auto &cell: cells)
+  {
+    cell.solve(-1);
+  }
+
+  ASSERT_FALSE(cells[0].isSolved());
+  ASSERT_FALSE(set.isDigitSolved(0));
+  set.solveCell(0, 0);
+  ASSERT_TRUE(cells[0].isSolved());
+  ASSERT_TRUE(set.isDigitSolved(0));
+  ASSERT_EQ(0, cells[0].getFinalNumber());
+
+  for (int i = 1; i < 9; i++)
+  {
+    set.solveCell(i, i);
+  }
+
+  ASSERT_TRUE(set.isSolved());
+
+  set.removeDigit(8);
+  ASSERT_FALSE(set.isSolved());
+  ASSERT_FALSE(set.isDigitSolved(8));
+}
+
+TEST_F(NineSetTests, reset)
+{
+  for (int i = 0; i < 9; i++)
+  {
+    set.solveCell(i, i);
+  }
+  set.reset();
+  ASSERT_FALSE(set.isSolved());
+  ASSERT_FALSE(set.isDigitSolved(0));
+}
+
+TEST_F(NineSetTests, checkForConflicts)
+{
+  for (int i = 0; i < 9; i++)
+  {
+    set.solveCell(i, i);
+  }
+  ASSERT_FALSE(set.checkForConflicts());
+  set.solveCell(1, 0);
+  ASSERT_TRUE(set.checkForConflicts());
+
+}
+
 TEST_F(NineSetTests, checkLastNumber)
 {
   for (int i = 0; i < 8; i++)
@@ -41,7 +122,6 @@ TEST_F(NineSetTests, checkLastNumber)
   ASSERT_TRUE(result);
   ASSERT_EQ(8, cells[8].getFinalNumber());
 }
-
 
 TEST_F(NineSetTests, checkOnlyMark)
 {
@@ -59,7 +139,6 @@ TEST_F(NineSetTests, checkOnlyMark)
   ASSERT_TRUE(result);
   ASSERT_EQ(3, cells[8].getFinalNumber());
 }
-
 
 TEST_F(NineSetTests, checkSingleRow)
 {
@@ -81,7 +160,6 @@ TEST_F(NineSetTests, checkSingleRow)
   ASSERT_EQ(2, rowRet);
   ASSERT_EQ(-1, colRet);
 }
-
 
 TEST_F(NineSetTests, checkSingleCol)
 {
@@ -162,7 +240,6 @@ TEST_F(NineSetTests, limitedMarksDepth2)
   }
 }
 
-
 TEST_F(NineSetTests, limitedMarksDepth3)
 {
   set.solveCell(0, 0);
@@ -210,7 +287,6 @@ TEST_F(NineSetTests, limitedMarksDepth3)
     EXPECT_FALSE(cells[8].isDigitMarked(cell345marks[i]));
   }
 }
-
 
 TEST_F(NineSetTests, limitedMarksDouble)
 {
@@ -275,8 +351,7 @@ TEST_F(NineSetTests, limitedMarksDouble)
   EXPECT_TRUE(cells[5].isDigitMarked(2));
 }
 
-
-TEST_F(NineSetTests, limitedCells2depth)
+TEST_F(NineSetTests, limitedMarks7depth)
 {
   set.solveCell(0, 0);
   set.solveCell(1, 1);
@@ -300,7 +375,6 @@ TEST_F(NineSetTests, limitedCells2depth)
   cells[8].insertMark(6);
   cells[8].insertMark(7);
   cells[8].insertMark(8);
-
 
 
   EXPECT_TRUE(set.checkLimitedMarks());
@@ -327,3 +401,5 @@ TEST_F(NineSetTests, limitedCells2depth)
   EXPECT_FALSE(cells[4].isDigitMarked(6));
   EXPECT_FALSE(cells[4].isDigitMarked(8));
 }
+
+

@@ -3,19 +3,17 @@
 //
 
 #include "gtest/gtest.h"
-#include "objects/solver/Cell.h"
+#include "Cell.h"
 
 class CellTests : public ::testing::Test
 {
 protected:
     Cell cell, cell2;
-    GridTextBox t;
 
     virtual void SetUp()
     {
-      cell.empty(false);
-      cell2.empty(false);
-      t.setText("");
+      cell.empty();
+      cell2.empty();
     }
 
     virtual void TearDown()
@@ -40,7 +38,6 @@ TEST_F(CellTests, markInsertRemove)
   ASSERT_FALSE(cell.removeMark(2));
 }
 
-
 TEST_F(CellTests, checkLoneMark)
 {
   cell.insertMark(5);
@@ -55,7 +52,6 @@ TEST_F(CellTests, checkLoneMark)
   ASSERT_EQ(5, cell.checkLoneMark());
 }
 
-
 TEST_F(CellTests, solve)
 {
   cell.solve(5);
@@ -63,35 +59,18 @@ TEST_F(CellTests, solve)
   ASSERT_TRUE(cell.isSolved());
   ASSERT_EQ(5, cell.getFinalNumber());
 
-  cell.empty(false);
+  cell.empty();
   cell.solve(-1);
 
   ASSERT_FALSE(cell.isSolved());
   ASSERT_EQ(9, cell.getNumberOfMarks());
 
-  cell.empty(false);
+  cell.empty();
   cell.insertMark(4);
   cell.insertMark(3);
   cell.insertMark(2);
   cell.solve(5);
   ASSERT_EQ(0, cell.getNumberOfMarks());
-}
-
-
-TEST_F(CellTests, fillFromTextBox)
-{
-  t.setText("5");
-  cell.addTextBox(&t);
-  cell.fillFromTextBox(true);
-
-  ASSERT_TRUE(cell.isSolved());
-  ASSERT_EQ(4, cell.getFinalNumber());
-
-  cell.empty(false);
-  t.setText("");
-  cell.fillFromTextBox(true);
-
-  ASSERT_FALSE(cell.isSolved());
 }
 
 TEST_F(CellTests, empty)
@@ -100,15 +79,14 @@ TEST_F(CellTests, empty)
   cell.insertMark(4);
   cell.insertMark(6);
 
-  cell.empty(false);
+  cell.empty();
 
   ASSERT_EQ(0, cell.getNumberOfMarks());
 
   cell.solve(5);
-  cell.empty(false);
+  cell.empty();
   ASSERT_FALSE(cell.isSolved());
 }
-
 
 TEST_F(CellTests, orMarksSolvedCell)
 {
@@ -151,7 +129,6 @@ TEST_F(CellTests, orMarksCell)
   }
 }
 
-
 TEST_F(CellTests, orMarksArray)
 {
   cell.insertMark(5);
@@ -179,7 +156,6 @@ TEST_F(CellTests, orMarksArray)
       ASSERT_FALSE(orResultBools[i]);
   }
 }
-
 
 TEST_F(CellTests, fixLimitedMarks)
 {

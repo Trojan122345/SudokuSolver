@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 
 add_executable(SudokuSolver)
-add_executable(Tests)
+add_executable(Tests Test/CellTests.cpp Test/NineSetTests.cpp)
 
 include_directories(
         headers
