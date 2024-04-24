@@ -7,6 +7,7 @@
 
 
 #include "TextBox.h"
+#include "Cell.h"
 
 class GridTextBox : public TextBox
 {
@@ -15,22 +16,31 @@ private:
     bool marks[9];
     bool originalDigit;
 
+    bool* solving;
+
+    Cell* cell;
+
     void setMarkPosition(int digit);
-protected:
     void initMarkText();
+    void deleteMarks();
 public:
     GridTextBox();
 
     void render(sf::RenderTarget* target) override;
+    void update() override;
 
     void setMark(int digit, bool isSet);
-    void deleteMarks();
 
     void setOriginalDigit(bool isOriginal);
 
     void onMouseMove(sf::Event::MouseMoveEvent mouseMoveEvent) override;
 
     void empty();
+
+    void setCell(Cell* cellToSet);
+    void setSolving(bool* solvingToSet);
+
+    void fillCell(bool doMarks);
 };
 
 

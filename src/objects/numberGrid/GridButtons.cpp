@@ -21,13 +21,12 @@ void SolverButton::resetInitResultText()
   SolverButton::resultText.setString("");
 }
 
-SolverButton::SolverButton(float posX, float posY, NumberGrid* ng) : Button(posX, posY), solver(), goSlow(nullptr)
+SolverButton::SolverButton(float posX, float posY, NumberGrid* ng) : Button(posX, posY), goSlow(nullptr)
 {
   pauseSolver = false;
   solverDone = false;
   solving = false;
   this->numberGrid = ng;
-  solver.addTextBoxes(this->numberGrid->getCells());
   this->setText("Solve");
   SolverButton::initResultText();
 }
@@ -39,11 +38,8 @@ SolverButton::~SolverButton()
 
 void SolverButton::solve()
 {
-  solver.setSleep(false);
-  solver.empty();
-  solver.loadNumbers(true);
   setSlow();
-  solver.solve(pauseSolver, solverDone);
+  numberGrid->solve(pauseSolver, solverDone);
 }
 
 void SolverButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
@@ -53,8 +49,10 @@ void SolverButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
     if (locked == nullptr || !*locked)
     {
       resetInitResultText();
-      std::thread{&SolverButton::solve, this}.detach();
       solving = true;
+      numberGrid->setSolvingPtr(&solving);
+      solve();
+      //std::thread{&SolverButton::solve, this}.detach();
       if (locked != nullptr)
       {
         *locked = true;
@@ -90,7 +88,7 @@ void SolverButton::update()
     pauseSolver = false;
     this->setText("Solve");
     solverDone = false;
-    if (!solver.checkConflicts())
+    if (numberGrid->checkSolvedPuzzle())
       resultText.setString("Success!");
     else
       resultText.setString("Failed!");
@@ -105,9 +103,9 @@ void SolverButton::addGoSlowCheckbox(CheckBox* checkBox)
 void SolverButton::setSlow()
 {
   if (goSlow != nullptr)
-    solver.setSleep(goSlow->isChecked());
+    numberGrid->setSleep(goSlow->isChecked());
   else
-    solver.setSleep(false);
+    numberGrid->setSleep(false);
 }
 
 void SolverButton::onLock()
@@ -390,10 +388,7 @@ SolveBruteButton::SolveBruteButton(float posX, float posY, NumberGrid* ng) : Sol
 
 void SolveBruteButton::solve()
 {
-  solver.setSleep(false);
-  solver.empty();
-  solver.loadNumbers(false);
   setSlow();
-  solver.solveBrute(pauseSolver, solverDone);
+  numberGrid->solveBrute(pauseSolver, solverDone);
 }
 

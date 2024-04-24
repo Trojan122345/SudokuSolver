@@ -4,13 +4,16 @@
 
 #include <iostream>
 #include <regex>
+#include <thread>
 #include "NumberGrid.h"
 
-NumberGrid::NumberGrid(float posX, float posY) : cells(9)
+NumberGrid::NumberGrid(float posX, float posY) : cells(9), solver()
 {
   initBorder(posX, posY);
   initGrid();
   this->highlightedBox = nullptr;
+  this->solving = nullptr;
+  connectCells();
 }
 
 NumberGrid::~NumberGrid()
@@ -57,6 +60,17 @@ void NumberGrid::initGrid()
   }
 }
 
+void NumberGrid::connectCells()
+{
+  for (int row = 0; row < 9; ++row)
+  {
+    for (int col = 0; col < 9; ++col)
+    {
+      cells[row][col]->setCell(solver.getCell(row, col));
+    }
+  }
+}
+
 void NumberGrid::render(sf::RenderTarget* target)
 {
   target->draw(gridBorder);
@@ -77,6 +91,13 @@ void NumberGrid::render(sf::RenderTarget* target)
 void NumberGrid::update()
 {
   Object::update();
+  for (auto &row: cells)
+  {
+    for (auto &cell: row)
+    {
+      cell->update();
+    }
+  }
 }
 
 bool NumberGrid::isInBoundaries(float posX, float posY)
@@ -224,21 +245,6 @@ void NumberGrid::setText(const std::string &str, int cellRow, int cellCol)
   this->cells[cellRow][cellCol]->setText(str);
 }
 
-int** NumberGrid::getNumbers()
-{
-  int** ret = new int* [9];
-  for (int i = 0; i < 9; i++)
-  {
-    ret[i] = new int[9];
-    for (int ii = 0; ii < 9; ii++)
-    {
-      ret[i][ii] = cells[i][ii]->getNumberFromText();
-    }
-  }
-
-  return ret;
-}
-
 void NumberGrid::deleteAllText()
 {
   for (int i = 0; i < 9; i++)
@@ -260,3 +266,57 @@ void NumberGrid::onUnLock()
 {
 
 }
+
+void NumberGrid::solve(bool &pause, bool &done)
+{
+  solver.setSleep(false);
+  solver.empty();
+  fillCells(true);
+  solver.updateChanges(true);
+  solver.setSleep(sleep);
+  std::thread{&Solver::solve, &solver, std::ref(pause), std::ref(done)}.detach();
+}
+
+void NumberGrid::solveBrute(bool &pause, bool &done)
+{
+  solver.setSleep(false);
+  solver.empty();
+  fillCells(false);
+  solver.updateChanges(false);
+  solver.setSleep(sleep);
+  std::thread{&Solver::solveBrute, &solver, std::ref(pause), std::ref(done)}.detach();
+}
+
+bool NumberGrid::checkSolvedPuzzle()
+{
+  return solver.checkSolvedPuzzle();
+}
+
+void NumberGrid::setSleep(bool doSleep)
+{
+  sleep = doSleep;
+}
+
+void NumberGrid::fillCells(bool doMarks)
+{
+  for (auto &row: cells)
+  {
+    for (auto &cell: row)
+    {
+      cell->fillCell(doMarks);
+    }
+  }
+}
+
+void NumberGrid::setSolvingPtr(bool* solvingToSet)
+{
+  this->solving = solvingToSet;
+  for (int row = 0; row < 9; ++row)
+  {
+    for (int col = 0; col < 9; ++col)
+    {
+      cells[row][col]->setSolving(solving);
+    }
+  }
+}
+

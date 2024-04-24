@@ -9,8 +9,8 @@ NineSet::NineSet() : digits{}
 {
   solved = false;
   solvedDigits = 0;
-  for (auto &number: digits)
-    number = false;
+  for (auto &digit: digits)
+    digit = false;
 }
 
 NineSet::~NineSet()

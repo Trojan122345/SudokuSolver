@@ -16,8 +16,6 @@ private:
     std::vector<std::vector<Cell*>> cells;
     std::vector<NineSet> rows, cols, boxes;
 
-    void updateChanges(bool updateMarks);
-
     //Checks for cells that have only one insertMark
     //If such cell is found, it fills in the digit
     bool checkLoneMarks();
@@ -46,14 +44,14 @@ public:
     void initCells();
     void initSets();
 
-    void addTextBoxes(std::vector<std::vector<GridTextBox*>> grid);
-    void loadNumbers(bool doMarks);
+    void updateChanges(bool updateMarks);
     void setSleep(bool doSleep);
 
     void solve(bool &pause, bool &done);
     void solveBrute(bool &pause, bool &done);
-    bool checkConflicts();
+    bool checkSolvedPuzzle();
 
+    Cell* getCell(int row, int col);
 
     void empty();
 };

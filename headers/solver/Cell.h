@@ -7,13 +7,12 @@
 
 
 #include <list>
-#include "objects/numberGrid/GridTextBox.h"
 
 class Cell
 {
 private:
     //If solved, this is the digit
-    //If not, finalDigit = 0
+    //If not, finalDigit = -1
     int finalDigit;
 
     //# of marks
@@ -23,20 +22,19 @@ private:
     bool marks[9];
 
     bool solved;
-    GridTextBox* textBox;
 
     bool sleeping;
     bool *pause;
+
+    void sleep();
 public:
     Cell();
     ~Cell();
 
     [[nodiscard]] int getFinalNumber() const;
-    void addTextBox(GridTextBox* cell);
 
     //Fills the final digit
     void solve(int number);
-    void fillFromTextBox(bool doMarks);
     [[nodiscard]] bool isSolved() const;
 
     //Mark (possible digit in the cell) manipulation
@@ -55,10 +53,9 @@ public:
     //else returns -1
     int checkLoneMark();
 
-    void empty(bool emptyTextbox);
+    void empty();
     [[nodiscard]] int getNumberOfMarks() const;
 
-    void sleep();
     void setSleep(bool doSleep);
     void setPause(bool &pauseExt);
 };

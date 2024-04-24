@@ -18,9 +18,15 @@ private:
     sf::Vector2f position;
     std::vector<std::vector<GridTextBox*>> cells;
 
+    //Sudoku solver
+    Solver solver;
+    bool* solving;
+    bool sleep;
+
     //initializers
     void initBorder(float posX, float posY);
     void initGrid();
+    void connectCells();
 
     //Highlight related stuff
     TextBox* highlightedBox;
@@ -50,13 +56,14 @@ public:
     void keyPressed(sf::Keyboard::Key key) override;
     void setText(const std::string &str, int cellRow, int cellCol);
 
-    //Get finalDigit matrix for the solver
-    int** getNumbers();
-
-    std::vector<std::vector<GridTextBox*>> getCells()
-    { return cells; }
-
     void deleteAllText();
+
+    void solve(bool &pause, bool &done);
+    void solveBrute(bool &pause, bool &done);
+    bool checkSolvedPuzzle();
+    void setSleep(bool doSleep);
+    void fillCells(bool doMarks);
+    void setSolvingPtr(bool* solvingToSet);
 };
 
 

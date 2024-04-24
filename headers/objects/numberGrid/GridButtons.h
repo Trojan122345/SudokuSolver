@@ -12,13 +12,12 @@ class SolverButton : public Button
 {
 private:
     CheckBox* goSlow;
-    NumberGrid* numberGrid;
 protected:
+    NumberGrid* numberGrid;
     static sf::Text resultText;
     static void initResultText();
 
     bool pauseSolver, solverDone, solving;
-    Solver solver;
 
     void setSlow();
     void resetInitResultText();

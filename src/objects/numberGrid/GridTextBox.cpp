@@ -2,15 +2,18 @@
 // Created by Troja on 20/04/2024.
 //
 
+#include <iostream>
 #include "objects/numberGrid/GridTextBox.h"
 
-GridTextBox::GridTextBox() : TextBox()
+GridTextBox::GridTextBox() : TextBox(), originalDigit(false), marks()
 {
+  cell = nullptr;
   initMarkText();
   for (bool &m: marks)
   {
     m = false;
   }
+  solving = nullptr;
 }
 
 void GridTextBox::initMarkText()
@@ -34,6 +37,27 @@ void GridTextBox::render(sf::RenderTarget* target)
   }
 }
 
+void GridTextBox::update()
+{
+  TextBox::update();
+  if (solving != nullptr && *solving)
+  {
+    if (cell->getFinalNumber() >= 0)
+    {
+      deleteMarks();
+      this->setText(std::to_string(cell->getFinalNumber() + 1));
+    }
+    else
+    {
+      this->setText("");
+      for (int i = 0; i < 9; ++i)
+      {
+        setMark(i, cell->isDigitMarked(i));
+      }
+    }
+  }
+}
+
 void GridTextBox::setMark(int digit, bool isSet)
 {
   marks[digit] = isSet;
@@ -46,7 +70,6 @@ void GridTextBox::deleteMarks()
     m = false;
   }
 }
-
 
 void GridTextBox::setOriginalDigit(bool isOriginal)
 {
@@ -76,9 +99,27 @@ void GridTextBox::setMarkPosition(int digit)
                    position.y + -1 + this->size.y / 4 * (digit / 3 * 1.25f + 0.75f));
 }
 
-void GridTextBox::empty(){
+void GridTextBox::empty()
+{
   setText("");
   deleteMarks();
-  setBackgroundColor(sf::Color::Transparent);
-  originalDigit = false;
+  setOriginalDigit(false);
+}
+
+void GridTextBox::setCell(Cell* cellToSet)
+{
+  this->cell = cellToSet;
+}
+
+void GridTextBox::setSolving(bool* solvingToSet)
+{
+  this->solving = solvingToSet;
+}
+
+void GridTextBox::fillCell(bool doMarks)
+{
+  int digit = getNumberFromText() - 1;
+  setOriginalDigit(digit > -1);
+  if (doMarks || digit > -1)
+    cell->solve(digit);
 }

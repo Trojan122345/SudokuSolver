@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 
 
-add_executable(SudokuSolver src/objects/SolverGUI.cpp headers/objects/SolverGUI.h)
+add_executable(SudokuSolver)
 add_executable(Tests)
 
 include_directories(

@@ -49,30 +49,7 @@ void Solver::initSets()
   }
 }
 
-void Solver::addTextBoxes(std::vector<std::vector<GridTextBox*>> grid)
-{
-  for (int i = 0; i < 9; i++)
-  {
-    for (int ii = 0; ii < 9; ii++)
-    {
-      this->cells[i][ii]->addTextBox(grid[i][ii]);
-    }
-  }
-}
-
-void Solver::loadNumbers(bool doMarks)
-{
-  for (auto &row: cells)
-  {
-    for (auto &cell: row)
-    {
-      cell->fillFromTextBox(doMarks);
-    }
-  }
-
-  updateChanges(doMarks);
-}
-
+//Use pointer
 void Solver::setSleep(bool doSleep)
 {
   for (auto &row: cells)
@@ -182,7 +159,7 @@ bool Solver::solveBruteRecursion(int cellRowIndex, int cellColIndex)
         {
           return true;
         }
-        cells[cellRowIndex][cellColIndex]->empty(true);
+        cells[cellRowIndex][cellColIndex]->empty();
         rows[cellRowIndex].removeDigit(digit);
         cols[cellColIndex].removeDigit(digit);
         boxes[cellRowIndex / 3 * 3 + cellColIndex / 3].removeDigit(digit);
@@ -370,7 +347,7 @@ void Solver::empty()
   {
     for (int ii = 0; ii < 9; ii++)
     {
-      cells[i][ii]->empty(false);
+      cells[i][ii]->empty();
     }
     rows[i].reset();
     cols[i].reset();
@@ -378,16 +355,18 @@ void Solver::empty()
   }
 }
 
-bool Solver::checkConflicts()
+bool Solver::checkSolvedPuzzle()
 {
   for (int i = 0; i < 9; i++)
   {
-    if (boxes[i].checkForConflicts())
-      return true;
-    if (cols[i].checkForConflicts())
-      return true;
-    if (rows[i].checkForConflicts())
-      return true;
+    if (boxes[i].checkForConflicts() || cols[i].checkForConflicts() || rows[i].checkForConflicts()
+        || !boxes[i].isSolved() || !cols[i].isSolved() || !rows[i].isSolved())
+      return false;
   }
-  return false;
+  return true;
+}
+
+Cell* Solver::getCell(int row, int col)
+{
+  return cells[row][col];
 }

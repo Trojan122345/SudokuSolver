@@ -6,7 +6,7 @@
 #include <thread>
 #include "Cell.h"
 
-Cell::Cell() : marks{}, textBox(nullptr), pause(nullptr)
+Cell::Cell() : marks{}, pause(nullptr)
 {
   finalDigit = -1;
   solved = false;
@@ -20,12 +20,7 @@ Cell::Cell() : marks{}, textBox(nullptr), pause(nullptr)
 
 Cell::~Cell()
 {
-  textBox = nullptr;
-}
 
-void Cell::addTextBox(GridTextBox* cell)
-{
-  this->textBox = cell;
 }
 
 void Cell::solve(int number)
@@ -39,12 +34,10 @@ void Cell::solve(int number)
     {
       removeMark(i);
     }
-    if (textBox != nullptr)
-    {
-      textBox->setText(std::to_string(finalDigit + 1));
-      if (sleeping)
-        sleep();
-    }
+
+    if (sleeping)
+      sleep();
+
   }
   else
   {
@@ -54,20 +47,6 @@ void Cell::solve(int number)
     {
       insertMark(i);
     }
-  }
-}
-
-void Cell::fillFromTextBox(bool doMarks)
-{
-  if (this->textBox != nullptr)
-  {
-    int number = textBox->getNumberFromText() - 1;
-    if (doMarks || number > -1)
-      solve(number);
-    if (number != -1)
-      textBox->setOriginalDigit(true);
-    else
-      textBox->setOriginalDigit(false);
   }
 }
 
@@ -87,8 +66,6 @@ void Cell::insertMark(int digit)
   if (!marks[digit])
   {
     marks[digit] = true;
-    if (textBox != nullptr)
-      textBox->setMark(digit, true);
     numberOfMarks++;
   }
   if (sleeping)
@@ -103,8 +80,6 @@ bool Cell::removeMark(int digit)
   {
     ret = true;
     marks[digit] = false;
-    if (textBox != nullptr)
-      textBox->setMark(digit, false);
     numberOfMarks--;
   }
   if (sleeping)
@@ -200,18 +175,11 @@ int Cell::checkLoneMark()
   return -1;
 }
 
-void Cell::empty(bool emptyTextbox)
+void Cell::empty()
 {
   finalDigit = -1;
   solved = false;
-  if (emptyTextbox)
-  {
-    textBox->setText("");
-  }
-  else
-  {
-    pause = nullptr;
-  }
+  pause = nullptr;
   for (int i = 0; i < 9; i++)
   {
     removeMark(i);
