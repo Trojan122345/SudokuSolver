@@ -21,6 +21,7 @@ private:
     //Sudoku solver
     Solver solver;
     bool* solving;
+    bool* stop;
     bool sleep;
 
     //initializers
@@ -58,12 +59,15 @@ public:
 
     void deleteAllText();
 
+    void solveSetup(bool doMarks);
     void solve(bool &pause, bool &done);
     void solveBrute(bool &pause, bool &done);
     bool checkSolvedPuzzle();
+
     void setSleep(bool doSleep);
     void fillCells(bool doMarks);
     void setSolvingPtr(bool* solvingToSet);
+    bool* getStopPtr();
 };
 
 

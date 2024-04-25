@@ -2,7 +2,6 @@
 // Created by Troja on 12/04/2024.
 //
 
-#include <iostream>
 #include <thread>
 #include "Cell.h"
 
@@ -20,7 +19,8 @@ Cell::Cell() : marks{}, pause(nullptr)
 
 Cell::~Cell()
 {
-
+  pause = nullptr;
+  delete pause;
 }
 
 void Cell::solve(int number)
@@ -62,7 +62,6 @@ bool Cell::isSolved() const
 
 void Cell::insertMark(int digit)
 {
-  using namespace std::chrono_literals;
   if (!marks[digit])
   {
     marks[digit] = true;
@@ -75,7 +74,6 @@ void Cell::insertMark(int digit)
 bool Cell::removeMark(int digit)
 {
   bool ret = false;
-  using namespace std::chrono_literals;
   if (marks[digit])
   {
     ret = true;
@@ -90,21 +88,6 @@ bool Cell::removeMark(int digit)
 bool Cell::isDigitMarked(int digit)
 {
   return marks[digit];
-}
-
-bool* Cell::orMarks(Cell* cellToOr, int &ors)
-{
-  if (cellToOr->isSolved())
-  {
-    bool* ret = new bool[9];
-    ors = 9;
-    for (int i = 0; i < 9; i++)
-    {
-      ret[i] = true;
-    }
-    return ret;
-  }
-  return orMarks(cellToOr->marks, ors);
 }
 
 bool* Cell::orMarks(const bool orMarks[9], int &ors)

@@ -88,47 +88,6 @@ TEST_F(CellTests, empty)
   ASSERT_FALSE(cell.isSolved());
 }
 
-TEST_F(CellTests, orMarksSolvedCell)
-{
-  cell.insertMark(5);
-  cell.insertMark(4);
-  cell.insertMark(3);
-
-  cell2.solve(8);
-
-  int orResults;
-  bool* orResultBools = cell.orMarks(&cell2, orResults);
-
-  ASSERT_EQ(9, orResults);
-  for (int i = 0; i < 9; i++)
-  {
-    ASSERT_TRUE(orResultBools[i]);
-  }
-}
-
-TEST_F(CellTests, orMarksCell)
-{
-  cell.insertMark(5);
-  cell.insertMark(4);
-  cell.insertMark(3);
-
-  cell2.insertMark(5);
-  cell2.insertMark(6);
-  cell2.insertMark(7);
-
-  int orResult;
-  bool* orResultBools = cell.orMarks(&cell2, orResult);
-
-  ASSERT_EQ(5, orResult);
-  for (int i = 0; i < 9; i++)
-  {
-    if (i >= 3 && i <= 7)
-      ASSERT_TRUE(orResultBools[i]);
-    else
-      ASSERT_FALSE(orResultBools[i]);
-  }
-}
-
 TEST_F(CellTests, orMarksArray)
 {
   cell.insertMark(5);

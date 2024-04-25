@@ -2,7 +2,6 @@
 // Created by Troja on 12/04/2024.
 //
 
-#include <iostream>
 #include "NineSet.h"
 
 NineSet::NineSet() : digits{}
@@ -197,6 +196,7 @@ bool NineSet::limitedMarksRecursion(int finalDepth, int currentDepth, int startC
     bool* tempResult = cells[comparedCell]->orMarks(boolArray, totalMarks[comparedCell]);
     for (int i = 0; i < 9; i++)
       orResults[comparedCell][i] = tempResult[i];
+    delete [] tempResult;
   }
   for (int comparedCell = startCell; comparedCell < 9; comparedCell++)
   {

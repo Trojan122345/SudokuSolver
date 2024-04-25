@@ -19,7 +19,6 @@ Solver::~Solver()
     for (int ii = 0; ii < 9; ii++)
     {
       delete this->cells[i][ii];
-      this->cells[i][ii] = nullptr;
     }
   }
 }
@@ -116,46 +115,40 @@ void Solver::solveBrute(bool &pause, bool &done)
 
 bool Solver::solveBruteRecursion(int cellRowIndex, int cellColIndex)
 {
+  if(stop!= nullptr && *stop)
+    return true;
   if (cells[cellRowIndex][cellColIndex]->isSolved())
   {
-    if (cellColIndex < 8 && solveBruteRecursion(cellRowIndex, cellColIndex + 1))
+    if ((cellColIndex < 8 && solveBruteRecursion(cellRowIndex, cellColIndex + 1)) ||
+        (cellColIndex >= 8 && cellRowIndex < 8 && solveBruteRecursion(cellRowIndex + 1, 0)) ||
+        (cellColIndex >= 8 && cellRowIndex >= 8))
     {
       return true;
     }
-    else if (cellColIndex >= 8 && cellRowIndex < 8 && solveBruteRecursion(cellRowIndex + 1, 0))
-    {
-      return true;
-    }
-    else if (cellColIndex >= 8 && cellRowIndex >= 8)
-      return true;
   }
   else
   {
     for (int digit = 0; digit < 9; digit++)
     {
-      if (rows[cellRowIndex].isDigitSolved(digit) || cols[cellColIndex].isDigitSolved(digit) ||
-          boxes[cellRowIndex / 3 * 3 + cellColIndex / 3].isDigitSolved(digit))
-      {
+      if(stop!= nullptr && *stop)
+        return true;
+      if (!rows[cellRowIndex].isDigitSolved(digit) && !cols[cellColIndex].isDigitSolved(digit) &&
+          !boxes[cellRowIndex / 3 * 3 + cellColIndex / 3].isDigitSolved(digit))
+      /*{
         if (digit >= 8)
         {
           return false;
         }
       }
-      else
+      else*/
       {
         cells[cellRowIndex][cellColIndex]->solve(digit);
         rows[cellRowIndex].updateChanges(false);
         cols[cellColIndex].updateChanges(false);
         boxes[cellRowIndex / 3 * 3 + cellColIndex / 3].updateChanges(false);
-        if (cellColIndex < 8 && solveBruteRecursion(cellRowIndex, cellColIndex + 1))
-        {
-          return true;
-        }
-        else if (cellColIndex >= 8 && cellRowIndex < 8 && solveBruteRecursion(cellRowIndex + 1, 0))
-        {
-          return true;
-        }
-        else if (cellColIndex >= 8 && cellRowIndex >= 8)
+        if ((cellColIndex < 8 && solveBruteRecursion(cellRowIndex, cellColIndex + 1)) ||
+            (cellColIndex >= 8 && cellRowIndex < 8 && solveBruteRecursion(cellRowIndex + 1, 0)) ||
+            (cellColIndex >= 8 && cellRowIndex >= 8))
         {
           return true;
         }
@@ -175,6 +168,8 @@ bool Solver::checkLoneMarks()
   bool repeat;
   do
   {
+    if(stop!= nullptr && *stop)
+      return true;
     repeat = false;
     for (int i = 0; i < 9; i++)
     {
@@ -200,10 +195,14 @@ bool Solver::checkSetsMissingNumbers()
   bool repeat;
   do
   {
+    if(stop!= nullptr && *stop)
+      return true;
     repeat = false;
     //Rows check
     for (auto &row: rows)
     {
+      if(stop!= nullptr && *stop)
+        return true;
       if (row.checkLastNumber())
       {
         repeat = true;
@@ -215,6 +214,8 @@ bool Solver::checkSetsMissingNumbers()
     //Cols check
     for (auto &col: cols)
     {
+      if(stop!= nullptr && *stop)
+        return true;
       if (col.checkLastNumber())
       {
         repeat = true;
@@ -226,6 +227,8 @@ bool Solver::checkSetsMissingNumbers()
     //Boxes check
     for (auto &box: boxes)
     {
+      if(stop!= nullptr && *stop)
+        return true;
       if (box.checkLastNumber())
       {
         repeat = true;
@@ -244,10 +247,14 @@ bool Solver::checkSetsSingleMarks()
 
   do
   {
+    if(stop!= nullptr && *stop)
+      return true;
     repeat = false;
     //Rows check
     for (auto &row: rows)
     {
+      if(stop!= nullptr && *stop)
+        return true;
       if (row.checkOnlyMark())
       {
         repeat = true;
@@ -259,6 +266,8 @@ bool Solver::checkSetsSingleMarks()
     //Cols check
     for (auto &col: cols)
     {
+      if(stop!= nullptr && *stop)
+        return true;
       if (col.checkOnlyMark())
       {
         repeat = true;
@@ -270,6 +279,8 @@ bool Solver::checkSetsSingleMarks()
     //Boxes check
     for (auto &box: boxes)
     {
+      if(stop!= nullptr && *stop)
+        return true;
       if (box.checkOnlyMark())
       {
         repeat = true;
@@ -288,6 +299,8 @@ bool Solver::checkBoxSingleRowCols()
   {
     for (int digit = 0; digit < 9; digit++)
     {
+      if(stop!= nullptr && *stop)
+        return true;
       int boxRow = -1;
       int boxCol = -1;
       if (boxes[box].checkSingleRowCol(boxRow, boxCol, digit))
@@ -324,18 +337,24 @@ bool Solver::checkLimitedCellMarks()
   //Rows check
   for (auto &row: rows)
   {
+    if(stop!= nullptr && *stop)
+      return true;
     filled |= row.checkLimitedMarks();
   }
 
   //Cols check
   for (auto &col: cols)
   {
+    if(stop!= nullptr && *stop)
+      return true;
     filled |= col.checkLimitedMarks();
   }
 
   //Boxes check
   for (auto &box: boxes)
   {
+    if(stop!= nullptr && *stop)
+      return true;
     filled |= box.checkLimitedMarks();
   }
   return filled;
@@ -369,4 +388,9 @@ bool Solver::checkSolvedPuzzle()
 Cell* Solver::getCell(int row, int col)
 {
   return cells[row][col];
+}
+
+void Solver::setStop(bool &stopExt)
+{
+  stop = &stopExt;
 }

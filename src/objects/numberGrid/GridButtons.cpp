@@ -392,3 +392,37 @@ void SolveBruteButton::solve()
   numberGrid->solveBrute(pauseSolver, solverDone);
 }
 
+
+//Stop button
+StopButton::StopButton(float posX, float posY, NumberGrid* ng) : Button(posX, posY)
+{
+  stop = ng->getStopPtr();
+  setText("Stop");
+}
+
+StopButton::~StopButton()
+{
+  stop = nullptr;
+}
+
+void StopButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
+{
+  *stop = true;
+}
+
+void StopButton::update()
+{
+  Button::update();
+}
+
+void StopButton::onLock()
+{
+  Button::onUnLock();
+}
+
+void StopButton::onUnLock()
+{
+  Button::onLock();
+}
+
+

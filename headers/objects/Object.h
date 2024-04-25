@@ -16,7 +16,7 @@ class Object
 private:
     static int NextID;
     int ID;
-    int getNextID();
+    static int getNextID();
 
     bool didLock;
 protected:

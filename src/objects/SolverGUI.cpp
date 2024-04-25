@@ -60,6 +60,10 @@ void SolverGUI::initObjects()
   solverButtonBrute->setLock(lockGUI);
   objects.push_back(solverButtonBrute);
 
+  auto* stopButton = new StopButton(50+31*9+1+50+200+200, 75, numberGrid);
+  stopButton->setLock(lockGUI);
+  objects.push_back(stopButton);
+
   auto* goSlowBox = new CheckBox();
   goSlowBox->setPosition(50 + 31 * 9 + 1 + 250, 165);
   goSlowBox->setString("Solve slowly");

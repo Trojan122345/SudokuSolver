@@ -41,10 +41,10 @@ private:
     NumberGrid* numberGrid;
 public:
     explicit EraseButton(float posX, float posY, NumberGrid* ng);
-    void update() override;
-
-    void onClick(sf::Event::MouseButtonEvent mouseButtonEvent) override;
     ~EraseButton() override;
+
+    void update() override;
+    void onClick(sf::Event::MouseButtonEvent mouseButtonEvent) override;
 };
 
 class TestButton : public Button
@@ -73,6 +73,21 @@ public:
 
     void solve() override;
     //void onClick(sf::Event::MouseButtonEvent mouseButtonEvent) override;
+};
+
+class StopButton : public Button{
+private:
+    bool* stop;
+public:
+    explicit StopButton(float posX, float posY, NumberGrid* ng);
+    ~StopButton() override;
+
+    void update() override;
+    void onClick(sf::Event::MouseButtonEvent mouseButtonEvent) override;
+
+protected:
+    void onLock() override;
+    void onUnLock() override;
 };
 
 

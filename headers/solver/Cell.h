@@ -44,7 +44,6 @@ public:
 
     //Compares marks of each cell
     //Returns number of different Marks
-    bool* orMarks(Cell* cellToOr, int &ors);
     bool* orMarks(const bool marks[], int &ors);
     bool fixLimitedMarks(const bool limitedMarks[9]);
 

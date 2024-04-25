@@ -15,6 +15,7 @@ class Solver
 private:
     std::vector<std::vector<Cell*>> cells;
     std::vector<NineSet> rows, cols, boxes;
+    bool* stop;
 
     //Checks for cells that have only one insertMark
     //If such cell is found, it fills in the digit
@@ -54,6 +55,8 @@ public:
     Cell* getCell(int row, int col);
 
     void empty();
+
+    void setStop(bool &stopExt);
 };
 
 

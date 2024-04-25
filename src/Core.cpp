@@ -48,7 +48,7 @@ void Core::startLoop()
 void Core::update()
 {
   this->pollEvents();
-  for (Object* object: this->objects)
+  for (auto &object: this->objects)
   {
     object->update();
   }
@@ -58,7 +58,7 @@ void Core::render()
 {
   this->window->clear(sf::Color::White);
 
-  for (Object* object: this->objects)
+  for (auto &object: this->objects)
   {
     object->render(this->window);
   }

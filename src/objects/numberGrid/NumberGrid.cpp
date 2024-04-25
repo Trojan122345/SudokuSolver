@@ -13,19 +13,24 @@ NumberGrid::NumberGrid(float posX, float posY) : cells(9), solver()
   initGrid();
   this->highlightedBox = nullptr;
   this->solving = nullptr;
+  this->stop = new bool(false);
+  solver.setStop(*stop);
+  sleep = false;
   connectCells();
 }
 
 NumberGrid::~NumberGrid()
 {
   this->highlightedBox = nullptr;
-  for (auto row: cells)
+  for (auto &row: cells)
   {
-    for (auto &col: row)
+    for (auto &cell: row)
     {
-      delete col;
+      delete cell;
     }
   }
+  delete solving;
+  delete stop;
 }
 
 void NumberGrid::initBorder(float posX, float posY)
@@ -76,11 +81,11 @@ void NumberGrid::render(sf::RenderTarget* target)
   target->draw(gridBorder);
 
 
-  for (auto row: cells)
+  for (auto &row: cells)
   {
-    for (auto &box: row)
+    for (auto &cell: row)
     {
-      box->render(target);
+      cell->render(target);
     }
   }
 
@@ -113,7 +118,7 @@ void NumberGrid::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
     bool br = false;
 
 
-    for (auto row: cells)
+    for (auto &row: cells)
     {
       for (auto &box: row)
       {
@@ -211,7 +216,7 @@ void NumberGrid::onMouseMove(sf::Event::MouseMoveEvent mouseMoveEvent)
 {
   if (locked == nullptr || !*locked)
   {
-    for (auto row: cells)
+    for (auto &row: cells)
     {
       for (auto &cell: row)
       {
@@ -267,23 +272,25 @@ void NumberGrid::onUnLock()
 
 }
 
-void NumberGrid::solve(bool &pause, bool &done)
+void NumberGrid::solveSetup(bool doMarks)
 {
+  *stop = false;
   solver.setSleep(false);
   solver.empty();
-  fillCells(true);
-  solver.updateChanges(true);
+  fillCells(doMarks);
+  solver.updateChanges(doMarks);
   solver.setSleep(sleep);
+}
+
+void NumberGrid::solve(bool &pause, bool &done)
+{
+  solveSetup(true);
   std::thread{&Solver::solve, &solver, std::ref(pause), std::ref(done)}.detach();
 }
 
 void NumberGrid::solveBrute(bool &pause, bool &done)
 {
-  solver.setSleep(false);
-  solver.empty();
-  fillCells(false);
-  solver.updateChanges(false);
-  solver.setSleep(sleep);
+  solveSetup(false);
   std::thread{&Solver::solveBrute, &solver, std::ref(pause), std::ref(done)}.detach();
 }
 
@@ -318,5 +325,10 @@ void NumberGrid::setSolvingPtr(bool* solvingToSet)
       cells[row][col]->setSolving(solving);
     }
   }
+}
+
+bool* NumberGrid::getStopPtr()
+{
+  return stop;
 }
 
