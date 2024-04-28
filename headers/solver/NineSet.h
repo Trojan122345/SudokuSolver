@@ -22,7 +22,7 @@ private:
 
     bool solved;
 
-    //Removes number from marks of all cells
+    //Removes value from marks of all cells
     void removeMark(int number);
     bool limitedMarksRecursion(int finalDepth, int currentDepth, int startCell, bool boolArray[9]);
     bool limitedMarksRecursionStart(int finalDepth);
@@ -40,7 +40,7 @@ public:
     bool checkOnlyMark();//T
 
     //Checks if a digit is only in a single row or column of a box
-    //If it is, returns true and corresponding row/col number
+    //If it is, returns true and corresponding row/col value
     //Works only for boxes
     bool checkSingleRowCol(int &boxRowReturn, int &boxColReturn, int digit);//T
 

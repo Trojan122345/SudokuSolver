@@ -3,7 +3,6 @@
 //
 
 #include "GridButtons.h"
-#include <regex>
 
 //Solver button
 sf::Text SolverButton::resultText = sf::Text();
@@ -21,7 +20,7 @@ void SolverButton::resetInitResultText()
   SolverButton::resultText.setString("");
 }
 
-SolverButton::SolverButton(float posX, float posY, NumberGrid* ng) : Button(posX, posY), goSlow(nullptr)
+SolverButton::SolverButton(float posX, float posY, NumberGrid* ng) : Button(posX, posY, 150, 50), goSlow(nullptr)
 {
   pauseSolver = false;
   solverDone = false;
@@ -121,7 +120,7 @@ void SolverButton::onUnLock()
 
 
 //Erase button
-EraseButton::EraseButton(float posX, float posY, NumberGrid* ng) : Button(posX, posY)
+EraseButton::EraseButton(float posX, float posY, NumberGrid* ng) : Button(posX, posY, 150, 50)
 {
   this->numberGrid = ng;
   this->setText("Delete all");
@@ -149,36 +148,26 @@ void EraseButton::update()
 
 
 //Test button
-TestButton::TestButton(float posX, float posY, NumberGrid* ng) : Button(posX, posY)
+PrefillButton::PrefillButton(float posX, float posY, NumberGrid* ng) : Button(posX, posY, 150, 50)
 {
   numberGrid = ng;
   this->setText("Prefill grid");
-  this->textBox.setPosition(posX + 200, posY);
 }
 
-TestButton::~TestButton()
+PrefillButton::~PrefillButton()
 {
 
 }
 
-void TestButton::render(sf::RenderTarget* target)
-{
-  Button::render(target);
-  textBox.render(target);
-}
-
-void TestButton::update()
-{
-  Button::update();
-  textBox.update();
-}
-
-void TestButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
+void PrefillButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
 {
   if (locked == nullptr || !*locked)
   {
+    int prefillId = 0;
+    if(nud!= nullptr)
+      prefillId = nud->getValue();
     numberGrid->deleteAllText();
-    switch (textBox.getNumberFromText())
+    switch (prefillId)
     {
       case 2:
         numberGrid->setText("7", 0, 0);
@@ -336,47 +325,22 @@ void TestButton::onClick(sf::Event::MouseButtonEvent mouseButtonEvent)
   }
 }
 
-void TestButton::textEntered(const sf::String &str)
-{
-  if (locked == nullptr || !*locked)
-  {
-    std::string s = str.toAnsiString();
-    std::regex reg("[1-9]");
-    if (tBoxHighlighted && std::regex_match(s, reg))
-      this->textBox.setString(str);
-  }
-}
-
-void TestButton::onMouseReleased(sf::Event::MouseButtonEvent mouseButtonEvent)
+void PrefillButton::onMouseReleased(sf::Event::MouseButtonEvent mouseButtonEvent)
 {
   if (locked == nullptr || !*locked)
   {
     Button::onMouseReleased(mouseButtonEvent);
-    if (textBox.isInBoundaries(mouseButtonEvent.x, mouseButtonEvent.y))
-    {
-      tBoxHighlighted = !tBoxHighlighted;
-      textBox.setHighlight(tBoxHighlighted);
-    }
-    else
-    {
-      tBoxHighlighted = false;
-      textBox.setHighlight(tBoxHighlighted);
-    }
   }
 }
 
-void TestButton::keyPressed(sf::Keyboard::Key key)
-{
-  if (tBoxHighlighted && key == sf::Keyboard::BackSpace || key == sf::Keyboard::Delete)
-  {
-    textBox.setText("");
-  }
-}
-
-void TestButton::setLock(bool* lock)
+void PrefillButton::setLock(bool* lock)
 {
   Object::setLock(lock);
-  textBox.setLock(lock);
+}
+
+void PrefillButton::addNumeric(NumericUpDown* numericUpDown)
+{
+  this->nud = numericUpDown;
 }
 
 
@@ -394,10 +358,11 @@ void SolveBruteButton::solve()
 
 
 //Stop button
-StopButton::StopButton(float posX, float posY, NumberGrid* ng) : Button(posX, posY)
+StopButton::StopButton(float posX, float posY, NumberGrid* ng) : Button(posX, posY, 150, 50)
 {
   stop = ng->getStopPtr();
   setText("Stop");
+  Button::onLock();
 }
 
 StopButton::~StopButton()

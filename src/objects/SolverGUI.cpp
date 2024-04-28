@@ -5,6 +5,7 @@
 #include "SolverGUI.h"
 #include "NumberGrid.h"
 #include "GridButtons.h"
+#include "NumericUpDown.h"
 
 SolverGUI::SolverGUI() : lockGUI(new bool), objects()
 {
@@ -52,15 +53,15 @@ void SolverGUI::initObjects()
   eraseButton->setLock(lockGUI);
   objects.push_back(eraseButton);
 
-  auto* testButton = new TestButton(50 + 31 * 9 + 1 + 50, 225, numberGrid);
-  testButton->setLock(lockGUI);
-  objects.push_back(testButton);
+  auto* prefillButton = new PrefillButton(50 + 31 * 9 + 1 + 50, 225, numberGrid);
+  prefillButton->setLock(lockGUI);
+  objects.push_back(prefillButton);
 
   auto* solverButtonBrute = new SolveBruteButton(50 + 31 * 9 + 1 + 50 + 200, 75, numberGrid);
   solverButtonBrute->setLock(lockGUI);
   objects.push_back(solverButtonBrute);
 
-  auto* stopButton = new StopButton(50+31*9+1+50+200+200, 75, numberGrid);
+  auto* stopButton = new StopButton(50 + 31 * 9 + 1 + 50 + 200 + 200, 75, numberGrid);
   stopButton->setLock(lockGUI);
   objects.push_back(stopButton);
 
@@ -69,6 +70,13 @@ void SolverGUI::initObjects()
   goSlowBox->setString("Solve slowly");
   goSlowBox->setLock(lockGUI);
   objects.push_back(goSlowBox);
+
+  auto* nud = new NumericUpDown("xyz");
+  nud->setPosition(50 + 31 * 9 + 1 + 50 + 200, 225);
+  nud->setLabel("Prefill ID");
+  nud->setLimits(1, 5);
+  prefillButton->addNumeric(nud);
+  objects.push_back(nud);
 
   solverButtonBrute->addGoSlowCheckbox(goSlowBox);
   solverButton->addGoSlowCheckbox(goSlowBox);

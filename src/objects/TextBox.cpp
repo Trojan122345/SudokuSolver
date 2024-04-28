@@ -2,7 +2,6 @@
 // Created by Troja on 09/04/2024.
 //
 
-#include <iostream>
 #include "TextBox.h"
 #include "enums.h"
 
@@ -80,24 +79,9 @@ sf::Font* TextBox::getFont(FontType fontType)
 {
   auto* temp = new sf::Font();
 
-  //This should be handled differently - project is small, std::cout is enough for now
-  if (!temp->loadFromFile(getFontPath[fontType]))
-  {
-    std::cout << "Failed to load font\n";
-  }
+  !temp->loadFromFile(getFontPath[fontType]);
+
   return temp;
-}
-
-//Sets size of the gridBorder - method actually creates scale based on the initial size which is then applied
-//    this is necessary for correct text sizing and placement
-void TextBox::setSize(float boxSize)
-{
-  this->scale = boxSize / 30;
-
-  this->box.setSize(sf::Vector2f(boxSize, boxSize));
-  this->text.setCharacterSize(20 * this->scale);
-
-  this->setPosition(position.x, position.y);
 }
 
 void TextBox::setBackgroundColor(sf::Color c)

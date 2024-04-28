@@ -43,7 +43,7 @@ public:
     bool isDigitMarked(int digit);
 
     //Compares marks of each cell
-    //Returns number of different Marks
+    //Returns value of different Marks
     bool* orMarks(const bool marks[], int &ors);
     bool fixLimitedMarks(const bool limitedMarks[9]);
 

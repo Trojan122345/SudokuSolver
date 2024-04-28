@@ -2,7 +2,6 @@
 // Created by Troja on 12/04/2024.
 //
 
-#include <iostream>
 #include "Solver.h"
 
 Solver::Solver() : cells(9), rows(9), cols(9), boxes(9)
@@ -78,22 +77,36 @@ void Solver::solve(bool &pause, bool &done)
   bool doAdvanced;
   do
   {
+    if(stop!= nullptr && *stop)
+      break;
     doAdvanced = false;
     bool repeat;
     do
     {
       repeat = false;
       repeat |= checkLoneMarks();
+      if(stop!= nullptr && *stop)
+        break;
       repeat |= checkSetsMissingNumbers();
+      if(stop!= nullptr && *stop)
+        break;
       repeat |= checkSetsSingleMarks();
+      if(stop!= nullptr && *stop)
+        break;
     } while (repeat);
     for (int i = 0; i < 9; i++)
     {
       doAdvanced |= !boxes[i].isSolved();
     }
+    if(stop!= nullptr && *stop)
+      break;
     if (doAdvanced)
     {
+      if(stop!= nullptr && *stop)
+        break;
       doAdvanced = checkBoxSingleRowCols();
+      if(stop!= nullptr && *stop)
+        break;
       doAdvanced |= checkLimitedCellMarks();
     }
   } while (doAdvanced);
@@ -134,13 +147,6 @@ bool Solver::solveBruteRecursion(int cellRowIndex, int cellColIndex)
         return true;
       if (!rows[cellRowIndex].isDigitSolved(digit) && !cols[cellColIndex].isDigitSolved(digit) &&
           !boxes[cellRowIndex / 3 * 3 + cellColIndex / 3].isDigitSolved(digit))
-      /*{
-        if (digit >= 8)
-        {
-          return false;
-        }
-      }
-      else*/
       {
         cells[cellRowIndex][cellColIndex]->solve(digit);
         rows[cellRowIndex].updateChanges(false);
@@ -169,7 +175,7 @@ bool Solver::checkLoneMarks()
   do
   {
     if(stop!= nullptr && *stop)
-      return true;
+      return false;
     repeat = false;
     for (int i = 0; i < 9; i++)
     {
@@ -196,13 +202,13 @@ bool Solver::checkSetsMissingNumbers()
   do
   {
     if(stop!= nullptr && *stop)
-      return true;
+      return false;
     repeat = false;
     //Rows check
     for (auto &row: rows)
     {
       if(stop!= nullptr && *stop)
-        return true;
+        return false;
       if (row.checkLastNumber())
       {
         repeat = true;
@@ -215,7 +221,7 @@ bool Solver::checkSetsMissingNumbers()
     for (auto &col: cols)
     {
       if(stop!= nullptr && *stop)
-        return true;
+        return false;
       if (col.checkLastNumber())
       {
         repeat = true;
@@ -228,7 +234,7 @@ bool Solver::checkSetsMissingNumbers()
     for (auto &box: boxes)
     {
       if(stop!= nullptr && *stop)
-        return true;
+        return false;
       if (box.checkLastNumber())
       {
         repeat = true;
@@ -248,13 +254,13 @@ bool Solver::checkSetsSingleMarks()
   do
   {
     if(stop!= nullptr && *stop)
-      return true;
+      return false;
     repeat = false;
     //Rows check
     for (auto &row: rows)
     {
       if(stop!= nullptr && *stop)
-        return true;
+        return false;
       if (row.checkOnlyMark())
       {
         repeat = true;
@@ -267,7 +273,7 @@ bool Solver::checkSetsSingleMarks()
     for (auto &col: cols)
     {
       if(stop!= nullptr && *stop)
-        return true;
+        return false;
       if (col.checkOnlyMark())
       {
         repeat = true;
@@ -280,7 +286,7 @@ bool Solver::checkSetsSingleMarks()
     for (auto &box: boxes)
     {
       if(stop!= nullptr && *stop)
-        return true;
+        return false;
       if (box.checkOnlyMark())
       {
         repeat = true;
@@ -300,7 +306,7 @@ bool Solver::checkBoxSingleRowCols()
     for (int digit = 0; digit < 9; digit++)
     {
       if(stop!= nullptr && *stop)
-        return true;
+        return false;
       int boxRow = -1;
       int boxCol = -1;
       if (boxes[box].checkSingleRowCol(boxRow, boxCol, digit))
@@ -338,7 +344,7 @@ bool Solver::checkLimitedCellMarks()
   for (auto &row: rows)
   {
     if(stop!= nullptr && *stop)
-      return true;
+      return false;
     filled |= row.checkLimitedMarks();
   }
 
@@ -346,7 +352,7 @@ bool Solver::checkLimitedCellMarks()
   for (auto &col: cols)
   {
     if(stop!= nullptr && *stop)
-      return true;
+      return false;
     filled |= col.checkLimitedMarks();
   }
 
@@ -354,7 +360,7 @@ bool Solver::checkLimitedCellMarks()
   for (auto &box: boxes)
   {
     if(stop!= nullptr && *stop)
-      return true;
+      return false;
     filled |= box.checkLimitedMarks();
   }
   return filled;

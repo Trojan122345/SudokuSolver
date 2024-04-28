@@ -2,13 +2,11 @@
 // Created by Troja on 09/04/2024.
 //
 
-#include <iostream>
 #include "Core.h"
-#include "objects/numberGrid/CheckBox.h"
 #include "SolverGUI.h"
 
 Core::Core() :
-        videoMode(1600, 900),
+        videoMode(1000, 450),
         sfmlEvent()
 {
   initWindow();

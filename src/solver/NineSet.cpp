@@ -49,7 +49,7 @@ bool NineSet::checkLastNumber()
 {
   if (solvedDigits == 8)
   {
-    //Find the missing number
+    //Find the missing value
     for (int digit = 0; digit < 9; digit++)
     {
       if (!digits[digit])
@@ -59,7 +59,7 @@ bool NineSet::checkLastNumber()
         {
           if (!cells[cellIndex]->isSolved())
           {
-            //Solve the empty cell with the missing number
+            //Solve the empty cell with the missing value
             solveCell(cellIndex, digit);
             return true;
           }
@@ -88,14 +88,14 @@ bool NineSet::checkOnlyMark()
         int tempCellIndex = -1;
         for (int cellIndex = 0; cellIndex < 9; cellIndex++)
         {
-          //Count cells in which number is marked
+          //Count cells in which value is marked
           if (!cells[cellIndex]->isSolved() && cells[cellIndex]->isDigitMarked(digit))
           {
             numberOfMarks++;
             tempCellIndex = cellIndex;
           }
         }
-        //Check for single insertMark, if true, solves number
+        //Check for single insertMark, if true, solves value
         if (numberOfMarks == 1)
         {
           solveCell(tempCellIndex, digit);

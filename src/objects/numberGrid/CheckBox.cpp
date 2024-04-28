@@ -2,7 +2,6 @@
 // Created by Troja on 20/04/2024.
 //
 
-#include <iostream>
 #include "objects/numberGrid/CheckBox.h"
 
 CheckBox::CheckBox() : TextBox(), checked(false)

@@ -2,7 +2,6 @@
 // Created by Troja on 09/04/2024.
 //
 
-#include <iostream>
 #include "objects/Object.h"
 
 int Object::NextID = 0;

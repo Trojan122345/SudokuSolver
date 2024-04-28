@@ -2,7 +2,6 @@
 // Created by Troja on 20/04/2024.
 //
 
-#include <iostream>
 #include "objects/numberGrid/GridTextBox.h"
 
 GridTextBox::GridTextBox() : TextBox(), originalDigit(false), marks()

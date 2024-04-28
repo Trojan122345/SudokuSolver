@@ -6,6 +6,7 @@
 #define SUDOKUSOLVER_GRIDBUTTONS_H
 
 #include "Button.h"
+#include "NumericUpDown.h"
 
 
 class SolverButton : public Button
@@ -47,24 +48,20 @@ public:
     void onClick(sf::Event::MouseButtonEvent mouseButtonEvent) override;
 };
 
-class TestButton : public Button
+class PrefillButton : public Button
 {
 private:
     NumberGrid* numberGrid;
-    TextBox textBox;
-    bool tBoxHighlighted;
+    NumericUpDown* nud;
 public:
-    explicit TestButton(float posX, float posY, NumberGrid* ng);
-    ~TestButton() override;
+    explicit PrefillButton(float posX, float posY, NumberGrid* ng);
+    ~PrefillButton() override;
 
-    void render(sf::RenderTarget* target) override;
-    void update() override;
-
-    void textEntered(const sf::String &str) override;
-    void keyPressed(sf::Keyboard::Key key) override;
     void onClick(sf::Event::MouseButtonEvent mouseButtonEvent) override;
     void onMouseReleased(sf::Event::MouseButtonEvent mouseButtonEvent) override;
+
     void setLock(bool* lock) override;
+    void addNumeric(NumericUpDown* numericUpDown);
 };
 
 class SolveBruteButton : public SolverButton{

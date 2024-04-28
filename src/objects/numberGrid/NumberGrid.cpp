@@ -2,7 +2,6 @@
 // Created by Troja on 09/04/2024.
 //
 
-#include <iostream>
 #include <regex>
 #include <thread>
 #include "NumberGrid.h"
@@ -35,7 +34,6 @@ NumberGrid::~NumberGrid()
 
 void NumberGrid::initBorder(float posX, float posY)
 {
-  //Is it necessary?
   this->position.x = posX;
   this->position.y = posY;
 
